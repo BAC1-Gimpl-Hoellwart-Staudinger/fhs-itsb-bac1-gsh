@@ -1,0 +1,96 @@
+% !TeX encoding = UTF-8
+\documentclass[12pt,ngerman,a4paper]{article}
+\usepackage[ngerman]{babel}
+
+% The current guideline "Leitfaden Formales ITS ab Sep 21" defines Times New
+% Roman 12pt as font. However, this requires lualatex (or xelatex) as latex
+% processor.
+% You can disable it so the default font "Computer Modern" is used that is
+% quite close to Times, but not so narrow. Check with your advisor in advance.
+%\def \withTimesNewRoman
+
+% =========================
+%   Meta tags and title
+% =========================
+\def \myName        {Clemens Gimpl, Jakob Staudinger, Stefan Höllwart}
+\def \myTitle       {Titel der Arbeit}
+\def \mySubtitle    {Optionaler Untertitel}
+\def \supervisor    {Betreuer} % Betreuerin?
+\def \thesupervisor {Dr.\ Max Professor}
+\def \thesisType    {Bachelorarbeit 1}
+
+\def \course        {Informationstechnik \& System-Management}
+\def \bigboss       {FH-Prof.\ DI Dr.\ Gerhard Jöchtl}
+
+% =========================
+%      Includes
+% =========================
+\input{etc/packages}      % include packages
+\input{etc/fh-style}      % main document style
+\input{etc/translations}  % german translations
+\input{etc/listingsstyle} % colorful listings (source code)
+\input{etc/macros}        % custom definitions
+\input{etc/metadata}      % setting pdf meta data
+
+% images path
+\graphicspath{{frontmatter/images/} {chapters/images/}}
+% glossary
+\input{frontmatter/abbreviations}
+\addbibresource{literature.bib}
+
+% ========================================================
+%                  Begin of the document
+% ========================================================
+\begin{document}
+
+% keywords
+\setmetadata{FH Salzburg, Bachelorarbeit, ITS}
+
+\include{frontmatter/coverpage}
+\include{frontmatter/affirmation}     \newpage
+\include{frontmatter/abstract}        \newpage
+\include{frontmatter/acknowledgment}  \newpage
+
+% =========================
+%   Tables and lists
+% =========================
+\setcounter{page}{1}
+\pagestyle{roman-caps}
+
+\tableofcontents
+\newpage
+
+\printnoidxglossaries \newpage
+\listoffigures        \newpage
+\listoftables         \newpage
+\lstlistoflistings    \newpage
+
+% =========================
+%     Start of content
+% =========================
+\setcounter{page}{1}
+\pagestyle{custom-default}
+
+\include{chapters/introduction} \newpage
+%=========================
+\pagestyle{theoretical-part}
+
+% include here
+%=========================
+\pagestyle{practical-part}
+
+% include here
+%=========================
+\pagestyle{custom-default}
+\include{chapters/summary.tex} \newpage
+
+% biblioraphy
+\printbibliography[title={Literaturverzeichnis}] \newpage
+
+% =========================
+%        Appendix
+% =========================
+\appendix
+\input{chapters/appendix}
+
+\end{document}

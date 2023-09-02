@@ -1,0 +1,24 @@
+% =========================================================
+% Defining meta data
+%
+% No edit needed here
+% =========================================================
+
+\title{\myTitle}
+\author{\myName}
+
+\newcommand{\keywords}{}
+\newcommand*{\setmetadata}[1]{
+    % set meta data for pdf file
+    \hypersetup{%
+        bookmarksopen  = true,%
+        %bookmarksdepth = 2,% to show not more than sections and subsections
+        pdfauthor     = {\myName},%
+        pdfsubject    = {\thesisType~---~FH~Salzburg},%
+        pdftitle      = {\myName~--~\myTitle},%
+        pdfkeywords   = {#1}%
+    }
+
+    % set Keywords
+    \renewcommand{\keywords}{ \paragraph{Keywords:} \textit{#1} }
+}

@@ -1,0 +1,56 @@
+% =========================================================
+% Include packages
+% =========================================================
+
+% hyperlinks
+\usepackage[bookmarks,bookmarksnumbered=true,hidelinks,pdfhighlight=/O]{hyperref}
+
+% make listings colorful later in listingsstyle.tex
+\usepackage{listings}
+\usepackage{xcolor}
+
+% math fonts
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathrsfs}
+
+% SI units and alignment `S` in tables
+\usepackage{siunitx}
+
+\usepackage{lscape} % landscape (rotated) pages
+\usepackage{longtable, tabularx, booktabs} % tables
+\usepackage{multicol, multirow} % tables formatting
+\usepackage{cleveref} % \cref is better than \ref
+
+\usepackage{pgfplots} % use LaTeX to generate plots. Or include pdfs from gnuplot/matlab...
+\pgfplotsset{compat=1.16}
+
+% images and subfigures
+% always try to include eps of pdf for scalable images and searchable text...
+\usepackage{graphicx} % \includegraphics
+\usepackage{float} % for alignment [H]
+\usepackage{wrapfig} % Including figures which text can flow around
+\usepackage[labelfont=bf,singlelinecheck=off,justification=centering]{caption} % left/centering/raggedright
+\usepackage[justification=centering]{subcaption} % for caption a) b)... on subfigures
+
+\usepackage[page]{appendix}
+\usepackage{pdfpages} % \includepdf for appendices
+
+\usepackage[toc=false,nogroupskip,nonumberlist,abbreviations,style=super]{glossaries-extra}
+\makenoidxglossaries % no separate tools such as makeindex, bib2gls or makeglossaries needed, maybe slower though
+
+% Literature
+\usepackage[
+    backend=biber,
+    doi=true,
+    style=ieee,
+    maxnames=2,
+    minnames=1
+]{biblatex}
+\usepackage[ngerman]{babel}
+\addto\extrasngerman{%
+    \sisetup{locale = DE}
+    \crefname{listing}{Quelltext}{Quelltexte}
+}
+% Add german=guillemets for « and » as quotation marks.
+\usepackage[autostyle]{csquotes}

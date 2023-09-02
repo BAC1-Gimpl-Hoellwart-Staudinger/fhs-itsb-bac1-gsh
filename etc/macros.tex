@@ -1,0 +1,114 @@
+% =========================================================
+%  Definition of macros
+%
+%  You won't need most of them\ldots
+%  You can remove this file or define your own macros in here.
+% =========================================================
+
+% Abkürzung mathbf für einzelne Ziffern - muss innerhalb $$ oder \math sein
+% Bsp: 
+%      Die Zahlen unterscheiden sich in der Zehnerstelle: $ 5\*33 \neq 5\*43 $
+\def\*#1{\mathbf{#1}}
+
+\newcommand{\todo}[1]{\marginpar{\tiny\textcolor{red}{#1}}}
+
+% Turn/rotate font by 90°. Needs package {}graphicx} or {rotating}
+% e.g. \side{Sideway text}
+\newcommand{\side}[1]{\rotatebox{90}{#1}}
+\newcommand{\sh}[1]{\side{\textbf{#1}}} % Sideways bold
+
+% Needs package {pdfpages}
+% Includes whole pdf, generating title for toc and label
+%  arg1: Section-title for main document
+%  arg2: file path of included document without file ending (.pdf)
+\newcommand{\addAppendix}[2]{
+    \ihead{\appendixname -- #1} %\appendixname = Anhang / Appendix, depending on language used
+    \includepdf[scale=0.9,trim=0cm 2cm 0cm 1cm,pages={1},pagecommand={\section{#1}\label{#1}}]{#2}
+    \includepdf[scale=0.9,trim=0cm 2cm 0cm 1cm,pages=2-,pagecommand={}]{#2}
+}
+
+
+% Für Frageboegen mit freier Antwortmoeglichkeit:
+% https://tex.stackexchange.com/questions/11305/questionnaire-template
+% Use: \freequestion Das ist die Frage? \par
+\def\freequestion#1\par{#1\par\nobreak
+    \begingroup\nobreak
+    \advance\leftskip by 2pc
+    \hrule width 0pt height 1.7\baselineskip\hrulefill
+    \hrule width 0pt height 1.7\baselineskip\hrulefill
+    \par
+    \medskip
+    \endgroup
+}
+
+% Für Frageboegen mit 5 Antwortmoeglichkeiten. In plain LaTeX ohne package:
+% https://gist.github.com/lindig/3935127350488c42b8cd40b317e4cbec
+% Use: \question Das ist die Frage \par \agree
+\def\question#1\par#2\par{\hbox to \hsize
+    {\vbox{\hsize=0.72\hsize #1\dotfill}\quad#2\hfil}\medskip\goodbreak}
+\def\boxit#1{\hbox{\lower0.7ex\vbox{\hrule\hbox{\vrule\kern1pt
+                \vbox{\kern1pt\hbox to 1.3em
+                    {\small\strut\hfil #1\hfil}\kern1pt}\kern1pt\vrule}\hrule}}}
+\newdimen\scalewidth
+\scalewidth=0.25\hsize 
+\def\fiveboxes#1#2#3#4#5{\hbox to\scalewidth
+    {\boxit{#1}\hfil\boxit{#2}\hfil\boxit{#3}\hfil%
+        \boxit{#4}\hfil\boxit{#5}}}
+\def\boxes{\fiveboxes{}{}{}{}{}\ignorespaces}%
+\def\boxOne{\fiveboxes{X}{}{}{}{}\ignorespaces}%
+\def\boxTwo{\fiveboxes{}{X}{}{}{}\ignorespaces}%
+\def\boxThree{\fiveboxes{}{}{X}{}{}\ignorespaces}%
+\def\boxFour{\fiveboxes{}{}{}{X}{}\ignorespaces}%
+\def\boxFive{\fiveboxes{}{}{}{}{X}\ignorespaces}%
+\def\scale#1#2{%
+    \setbox0=\hbox{\boxes}%
+    \setbox1=\hbox to \wd0{\small\strut\hfill #2 $\to$}%
+    \setbox2=\hbox to \wd0{\small\strut $\gets$ #1 \hfill}%
+    \vbox{\medskip\box1\box2\kern2pt\box0}}
+\def\agree{\scale{stimme gar nicht zu}{stimme völlig zu}}
+\def\myscale#1#2{%
+    \setbox1=\hbox to \wd0{\small\strut\hfill #2 $\to$}%
+    \setbox2=\hbox to \wd0{\small\strut $\gets$ #1 \hfill}%
+    \vbox{\medskip\box1\box2\kern2pt\box0}}
+%%%%%
+
+
+% \blackout{arg1} um Text zu schwärzen
+\newlength{\blackoutwidth}
+\newcommand{\blackout}[1]
+{%necessary comment
+    \settowidth{\blackoutwidth}{#1}%
+    \rule[-0.3em]{\blackoutwidth}{1.125em}%
+}
+
+
+% current Month / Year for titlepage
+\newcommand{\dateDE}{\ifcase \month \or
+    Januar\or%
+    Februar\or%
+    März\or %
+    April\or%
+    Mai \or%
+    Juni\or%
+    Juli\or%
+    August\or%
+    September\or%
+    Oktober\or%
+    November\or%
+    Dezember%
+    \fi~\number\year}
+
+\newcommand{\dateEN}{\ifcase \month \or
+    January\or%
+    February\or%
+    March\or %
+    April\or%
+    May \or%
+    June\or%
+    July\or%
+    August\or%
+    September\or%
+    October\or%
+    November\or%
+    December%
+    \fi~\number\year}

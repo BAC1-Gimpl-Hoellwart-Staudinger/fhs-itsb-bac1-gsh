@@ -1,0 +1,64 @@
+% =========================================================
+% Title page
+%
+% No need to edit here except you don't write in German
+% =========================================================
+
+\begin{titlepage}
+
+\centering
+
+% FH Logo
+\includegraphics[width=2.4cm]{frontmatter/images/fhs-logo.pdf}
+
+\vspace*{1cm}
+
+{%
+    \Large
+    \textbf{\MakeUppercase{\thesisType}}%
+}
+\vspace*{1cm}
+
+{
+    \Large
+    \textbf{\myTitle}
+}
+
+\def\temp{\mySubtitle}
+\ifx\temp\empty \else
+    {
+        \large
+        \textbf{\mySubtitle}
+    }
+\fi
+
+\vfill
+
+%\large{
+    durchgeführt am Studiengang\\
+    \course\\
+    Fachhochschule Salzburg GmbH
+%}
+
+\vspace*{1cm}
+
+%\large{
+    vorgelegt von\\\myName
+%}
+
+\vfill
+
+%\large{
+    Studiengangsleiter: \bigboss \\[1ex]
+    \supervisor: \thesupervisor
+%}
+
+\vspace{1cm}
+
+%\large{
+    Puch/Salzburg, \dateDE %\dateEN for english
+%}
+
+\vspace{1cm}
+
+\end{titlepage}
