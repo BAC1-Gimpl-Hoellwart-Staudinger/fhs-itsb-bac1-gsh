@@ -5,7 +5,7 @@ import re
 import holidays
 import uuid
 from faker import Faker
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 
 def generate_dataset(num_employees, start_date, end_date, max_vacation_days):
@@ -84,3 +84,25 @@ def dump_dataset(dataset):
 
     with open(file_path, 'w') as json_output_file:
         json.dump(dataset, json_output_file, indent=4)
+
+
+def generate_schedule():
+    input_directory = "output"
+    file_name = "dataset.json"
+
+    file_path = os.path.join(input_directory, file_name)
+
+    with open(file_path, "r") as f:
+        data = json.load(f)
+    employees = data['employees']
+
+    start_date_str = '2024-01-01'
+    end_date_str = '2024-12-31'
+    delta = timedelta(days=1)
+    start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+    end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
+
+    while start_date <= end_date:
+        print(start_date.strftime("%Y-%m-%d"))
+        start_date += delta
+    # next step --> choose random employees and create a schedule considering their holidays
