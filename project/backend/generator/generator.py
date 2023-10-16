@@ -17,8 +17,10 @@ def generate_dataset(num_employees, start_date, end_date, max_vacation_days):
 
     employees = []
     picked_holidays = []
+    seq = 0
     for _ in range(num_employees):
-        employee_id = str(uuid.uuid4())
+        seq += 1
+        employee_id = seq  # str(uuid.uuid4())
         employee_name = random_names.pop()
         employee_vacation_schedule = []
 
