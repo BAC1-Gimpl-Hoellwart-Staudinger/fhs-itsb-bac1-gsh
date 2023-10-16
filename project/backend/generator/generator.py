@@ -2,6 +2,8 @@ import random
 import os
 import json
 import re
+from typing import List, Any
+
 import holidays
 import uuid
 from faker import Faker
@@ -102,7 +104,21 @@ def generate_schedule():
     start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
     end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
 
+    schedule: list[Any] = []
+
     while start_date <= end_date:
         print(start_date.strftime("%Y-%m-%d"))
         start_date += delta
-    # next step --> choose random employees and create a schedule considering their holidays
+        tmp_employee = random.choice(employees)
+        vacation_schedule = [datetime.strptime(date, '%Y-%m-%d') for date in tmp_employee['vacation_schedule']]
+        while check_holiday(start_date, vacation_schedule) is not True:
+            tmp_employee = random.choice(employees)
+            vacation_schedule = [datetime.strptime(date, '%Y-%m-%d') for date in tmp_employee['vacation_schedule']]
+        schedule.append(tmp_employee['id'])
+    print(f'Schedule length: {len(schedule)}')
+
+
+def check_holiday(start_date, vacation_schedule):
+    if start_date in vacation_schedule:
+        return False
+    return True
