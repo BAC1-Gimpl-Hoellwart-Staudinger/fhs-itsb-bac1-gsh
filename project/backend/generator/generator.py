@@ -91,23 +91,19 @@ def dump_dataset(dataset):
 def generate_schedule():
     input_directory = "output"
     file_name = "dataset.json"
-
     file_path = os.path.join(input_directory, file_name)
 
     with open(file_path, "r") as f:
         data = json.load(f)
     employees = data['employees']
 
-    start_date_str = '2024-01-01'
-    end_date_str = '2024-12-31'
     delta = timedelta(days=1)
-    start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
-    end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
+    start_date = datetime.strptime('2024-01-01', '%Y-%m-%d')
+    end_date = datetime.strptime('2024-12-31', '%Y-%m-%d')
 
-    schedule: list[Any] = []
+    schedule = []
 
     while start_date <= end_date:
-        print(start_date.strftime("%Y-%m-%d"))
         start_date += delta
         tmp_employee = random.choice(employees)
         vacation_schedule = [datetime.strptime(date, '%Y-%m-%d') for date in tmp_employee['vacation_schedule']]
