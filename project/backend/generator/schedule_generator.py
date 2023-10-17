@@ -20,11 +20,10 @@ class ScheduleGenerator:
 
         while start__date <= end__date:
             start__date += delta
-            tmp_employee = random.choice(employees)
-            vac_schedule_tmp = vac_schedule[tmp_employee['id']-1]
+            employee = random.choice(employees)
+            vac_schedule_tmp = vac_schedule[employee['id']-1]
             while check_holiday(start__date, vac_schedule_tmp) is not True:
-                tmp_employee = random.choice(employees)
-                vac_schedule_tmp = vac_schedule[tmp_employee['id']-1]
-            schedule.append(tmp_employee['id'])
+                employee = random.choice(employees)
+                vac_schedule_tmp = vac_schedule[employee['id']-1]
+            schedule.append(employee['id'])
         return schedule
-        #  print(f'Schedule length: {len(schedule)}')
