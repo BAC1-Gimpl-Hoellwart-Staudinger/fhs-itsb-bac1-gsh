@@ -1,9 +1,9 @@
 from employee_generator import EmployeeGenerator
 from schedule_generator import ScheduleGenerator
-from datetime import date, datetime
+from genetic_algorithm import GeneticAlgorithm
+from datetime import date
 
 if __name__ == "__main__":
-    now = datetime.now()
     num_employees = 4
     start_date = date(2024, 1, 1)
     end_date = date(2024, 12, 31)
@@ -14,9 +14,12 @@ if __name__ == "__main__":
     EmployeeGenerator.dump_json(dataset=dataset)
 
     schedule = []   # for testing --> creating 1000 schedules takes approximately 300 ms
-    for i in range(1000):
+    for i in range(10):
         schedule.append(ScheduleGenerator.generate(start_date=str(start_date), end_date=str(end_date), dataset=dataset))
 
-    now1 = datetime.now()
-    print(now1-now)
-    print(len(schedule))
+    schedule_cost = []
+    for s in schedule:
+        schedule_cost.append((GeneticAlgorithm.fitness(s, str(start_date), str(end_date), dataset), s))
+    schedule_cost.sort(reverse=True)
+    for s in schedule_cost:
+        print(f'Cost of the Schedule: {int(s[0])}$')
