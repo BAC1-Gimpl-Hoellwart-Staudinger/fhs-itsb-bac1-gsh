@@ -1,4 +1,5 @@
-from generator import generate_dataset, dump_dataset, generate_schedule
+from employee_generator import EmployeeGenerator
+from schedule_generator import ScheduleGenerator
 from datetime import date
 
 if __name__ == "__main__":
@@ -8,8 +9,7 @@ if __name__ == "__main__":
     min_vacation_days = 2
     max_vacation_days = 10
 
-    dataset = generate_dataset(num_employees, start_date, end_date, min_vacation_days, max_vacation_days)
-    dump_dataset(dataset)
-    print("Successfully generated dataset.")
+    dataset = EmployeeGenerator.generate(num_employees, start_date, end_date, min_vacation_days, max_vacation_days)
+    EmployeeGenerator.dump_json(dataset=dataset)
 
-    generate_schedule(str(start_date), str(end_date))
+    ScheduleGenerator.generate(start_date=str(start_date), end_date=str(end_date))
