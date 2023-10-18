@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "django-api"
+version = "0.1.0"
+description = ""
+authors = ["Clemens Gimpl <cgimpl.its-b2021@fh-salzburg.ac.at>"]
+readme = "README.md"
+packages = [{include = "django_api"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django = "^4.2.6"
+djangorestframework = "^3.14.0"
+holidays = "^0.35"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
