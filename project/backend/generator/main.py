@@ -2,6 +2,7 @@ from employee_generator import EmployeeGenerator
 from schedule_generator import ScheduleGenerator
 from genetic_algorithm import GeneticAlgorithm
 from datetime import date
+from timeit import default_timer as timer
 
 if __name__ == "__main__":
     num_employees = 4
@@ -10,12 +11,17 @@ if __name__ == "__main__":
     min_vacation_days = 2
     max_vacation_days = 10
 
+    timer_start = timer()
     dataset = EmployeeGenerator.generate(num_employees, start_date, end_date, min_vacation_days, max_vacation_days)
     EmployeeGenerator.dump_json(dataset=dataset)
 
-    schedule = []   # for testing --> creating 1000 schedules takes approximately 300 ms
+    schedule = [] # for testing --> creating 1000 schedules takes approximately 300 ms
     for i in range(10):
         schedule.append(ScheduleGenerator.generate(start_date=str(start_date), end_date=str(end_date), dataset=dataset))
+    timer_end = timer()
+    # maybe add this to the json export in the future
+    execution_time_ms = round((timer_end - timer_start) * 1000, 2)
+    print(f'Time to generate 10 schedules: {execution_time_ms} ms')
 
     schedule_cost = []
     for s in schedule:
