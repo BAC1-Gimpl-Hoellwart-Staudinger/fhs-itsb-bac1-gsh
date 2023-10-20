@@ -20,7 +20,7 @@ def generate_random_names(num_employees):
         # only append random name, if it is not already in the list and has no special characters
         while True:
             full_random_name = faker.name()
-            if (full_random_name not in random_names) and re.match(r"^[a-zA-Z\s]*$", full_random_name):
+            if (full_random_name not in random_names) and re.match(r"^[a-zA-Z\s]*$", full_random_name) and "Herr" not in full_random_name and "Frau" not in full_random_name:
                 random_names.append(full_random_name)
                 break
 
