@@ -53,6 +53,10 @@ class Date {
         return dayjs(date).format('DD.MM.YYYY HH:mm');
     }
 
+    static formatAPIDate(date) {
+        return dayjs(date).format('YYYY-MM-DD');
+    }
+
     static isMonday(date) {
         return dayjs(date).day() === 1;
     }

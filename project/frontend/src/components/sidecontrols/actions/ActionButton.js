@@ -1,7 +1,7 @@
 import { Button, CircularProgress } from '@mui/material';
 
-function ActionSubmitButtion(props) {
-    const { isLoading, children, variant = 2 } = props;
+function ActionButton(props) {
+    const { children, isLoading, type, variant = 2 } = props;
 
     function generateButtonClass() {
         switch(variant) {
@@ -9,6 +9,8 @@ function ActionSubmitButtion(props) {
                 return 'bg-gradient-to-br from-pink-500 to-orange-400';
             case 1:
                 return 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500';
+            case 2:
+                return 'bg-gradient-to-br from-orange-500 to-red-400';
             default:
                 return 'bg-gradient-to-br from-purple-600 to-blue-500';
         }
@@ -19,7 +21,7 @@ function ActionSubmitButtion(props) {
             className={generateButtonClass()}
             variant="contained"
             disabled={isLoading}
-            type="submit"
+            type={type}
             sx={{
                 padding: '10px 20px',
                 fontWeight: 600,
@@ -41,4 +43,4 @@ function ActionSubmitButtion(props) {
     );
 }
 
-export default ActionSubmitButtion;
+export default ActionButton;

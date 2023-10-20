@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import { useAsyncFn } from '../../../hooks/useAsync';
+import { getDataset } from '../../../utils/ApiRequest';
+import Date from '../../../utils/Date';
 import DatePickerMUI from '../../inputs/DatePickerMUI';
 import ActionFormContainer from './ActionFormContainer';
 import NumberPickerMUI from '../../inputs/NumberPickerMUI';
-import ActionSubmitButtion from './ActionSubmitButton';
-import { useAsyncFn } from '../../../hooks/useAsync';
-import { getDataset } from '../../../utils/ApiRequest';
+import ActionButton from './ActionButton';
 import toast from 'react-hot-toast';
 import dayjs from 'dayjs';
 
@@ -24,14 +25,29 @@ function GenerateDataset() {
             toast.error(`Number of employees must be between ${minValueEmployees} and ${maxValueEmployees}`);
             return;
         }
-        
+
         if(selectedDatePickerDateStart.isAfter(selectedDatePickerDateEnd)) {
             toast.error('Start date must be before end date');
             return;
         }
 
-        getDatasetExecute(selectedDatePickerDateStart, selectedDatePickerDateEnd, numberOfEmployees)
-            .then((data) => console.log(data))
+        getDatasetExecute(
+            Date.formatAPIDate(selectedDatePickerDateStart),
+            Date.formatAPIDate(selectedDatePickerDateEnd),
+            numberOfEmployees
+        )
+            .then((dataset) => {
+                const existingAppointments = JSON.parse(window.localStorage.getItem('appointments')) || [];
+
+                if(existingAppointments.length > 5) {
+                    existingAppointments.splice(0, existingAppointments.length);
+                }
+
+                const mergedAppointments = [...existingAppointments, dataset];
+                window.localStorage.setItem('appointments', JSON.stringify(mergedAppointments));
+
+                toast.success('Successfully fetched dataset', { duration: 3000 });
+            })
             .catch((err) => toast.error(err));
     }
 
@@ -39,7 +55,7 @@ function GenerateDataset() {
         <ActionFormContainer
             handleSubmit={handleSubmit}
         >
-            <div className="flex flex-row justify-between gap-10">
+            <div className="flex flex-row justify-between md:gap-10 gap-5">
                 <DatePickerMUI
                     label="Start Date"
                     selectedDatePickerDate={selectedDatePickerDateStart}
@@ -64,12 +80,13 @@ function GenerateDataset() {
                 size="small"
             />
 
-            <ActionSubmitButtion
+            <ActionButton
                 isLoading={isLoading}
+                type="submit"
                 variant={0}
             >
                 Generate Dataset
-            </ActionSubmitButtion>
+            </ActionButton>
         </ActionFormContainer>
     );
 }

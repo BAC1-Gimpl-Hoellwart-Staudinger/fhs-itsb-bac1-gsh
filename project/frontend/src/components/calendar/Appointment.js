@@ -54,7 +54,7 @@ function Appointment(props) {
         >
             {(dayjs(day.date).isSame(appointment.dateFrom, 'day') || viewScale === VIEW_SCALES.day) ? (
                 appointment.title
-            ) : (!Date.isMonday(day.date) && viewScale !== VIEW_SCALES.day) && (
+            ) : ((!Date.isMonday(day.date)) && viewScale !== VIEW_SCALES.day) && (
                 <div className={generateSpaceFillerStyle(appointment)} />
             )}
         </div>

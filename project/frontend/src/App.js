@@ -2,8 +2,12 @@ import { Toaster } from 'react-hot-toast';
 import { CalendarProvider } from './contexts/CalendarContext';
 import Calendar from './components/calendar/Calendar';
 import SideControls from './components/sidecontrols/SideControls';
+import dayjs from 'dayjs';
+import 'dayjs/locale/de-at';
 
 function App() {
+	dayjs.locale('de-at');
+
 	return (
 		<>
 			<Toaster />
