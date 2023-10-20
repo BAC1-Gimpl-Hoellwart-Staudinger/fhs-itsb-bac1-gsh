@@ -15,10 +15,7 @@ class EmployeeGenerator:
         if min_vacation_days > max_vacation_days:
             raise ValueError("Minimum vacation days must be smaller than maximum vacation days.")
 
-        dataset = {
-            "start_date": date_to_formatted_string(start_date),
-            "end_date": date_to_formatted_string(end_date),
-        }
+        dataset = {}
         random_names = generate_random_names(num_employees)
         austrian_holidays = get_austrian_holidays_dates(start_date, end_date)
 

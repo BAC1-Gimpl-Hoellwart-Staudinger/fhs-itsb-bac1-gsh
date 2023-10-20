@@ -7,7 +7,6 @@ from .helper_functions import check_holiday, string_to_date
 class ScheduleGenerator:
     @staticmethod
     def generate(start_date, end_date, dataset):
-
         employees = dataset['employees']
         delta = timedelta(days=1)
         start__date = string_to_date(start_date)
@@ -15,8 +14,8 @@ class ScheduleGenerator:
 
         schedule = []
         vac_schedule = []
-        for i in employees:
-            vac_schedule.append([string_to_date(date) for date in i['vacation_schedule']])
+        for employee in employees:
+            vac_schedule.append([string_to_date(date) for date in employee['vacation_schedule']])
 
         while start__date <= end__date:
             start__date += delta
