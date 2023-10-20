@@ -2,7 +2,7 @@ import random
 import os
 import json
 from datetime import timedelta
-from helper_functions import date_to_formatted_string, generate_random_names, get_austrian_holidays_dates
+from .helper_functions import date_to_formatted_string, generate_random_names, get_austrian_holidays_dates
 
 
 class EmployeeGenerator:
