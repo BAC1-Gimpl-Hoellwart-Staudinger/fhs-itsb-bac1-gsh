@@ -1,16 +1,15 @@
 import React, { createContext, useState, useEffect } from 'react';
-import Appointment from '../utils/Appointment';
 import dayjs from 'dayjs';
 
 const CalendarContext = createContext();
 
 function CalendarProvider({ children }) {
     let initialAppointments = [];
-    if (process.env.NODE_ENV !== 'production') {
+    /*if (process.env.NODE_ENV !== 'production') {
         for(let i = 0; i < 4; i++) {
             initialAppointments.push(Appointment.generateAppointment());
         }
-    }
+    }*/
 
     const VIEW_SCALES = {
         day: 'DAY',

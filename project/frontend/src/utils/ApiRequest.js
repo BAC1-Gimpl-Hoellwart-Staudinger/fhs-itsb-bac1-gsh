@@ -3,7 +3,9 @@ import axios from 'axios';
 // https://www.youtube.com/watch?v=lyNetvEfvT0
 
 function sendApiRequest(url, options = {}) {
-    const api = axios.create({ baseURL: process.env.REACT_APP_API_URL });
+    const api = axios.create({
+        baseURL: (process.env.NODE_ENV === 'production' ? process.env.REACT_APP_API_URL : process.env.REACT_APP_API_URL_DEV),
+    });
 
     return api(url, options)
         .then((response) => response.data)
@@ -13,10 +15,10 @@ function sendApiRequest(url, options = {}) {
 function getDataset(startDate, endDate, numberOfEmployees) {
     return sendApiRequest('/generate', {
         method: 'GET',
-        data: {
+        params: {
             startDate,
             endDate,
-            numberOfEmployees,
+            numEmployees: numberOfEmployees,
         },
     });
 }

@@ -41,6 +41,25 @@ class Appointment {
             dayjs(appointment.dateTo).minute() === 0
         );
     }
+
+    static APIDatasetToAppointments(dataset) {
+        const startDate = dayjs(dataset.metadata.start_date);
+        const employees = dataset.metadata.employees;
+
+        let appointments = [];
+        let workingDate = null;
+        dataset.schedule.forEach((day, dayIndex) => {
+            workingDate = dayjs(startDate).add(dayIndex, 'day');
+            appointments.push(this.createAppointment(
+                // day = employeeId, which starts at 1
+                employees[day-1].name,
+                workingDate,
+                workingDate,
+                this.colors[(day-1) % this.colors.length]
+            ));
+        });
+        return appointments;
+    }
 }
 
 export default Appointment;
