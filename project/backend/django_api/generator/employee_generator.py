@@ -48,9 +48,8 @@ class EmployeeGenerator:
                 "name": employee_name,
                 "vacation_schedule": employee_vacation_schedule
             })
-        dataset["employees"] = employees
 
-        return dataset
+        return employees
 
     @staticmethod
     def dump_json(dataset, output_directory="output", file_name="dataset.json"):
@@ -63,3 +62,7 @@ class EmployeeGenerator:
             json.dump(dataset, json_output_file, indent=4)
 
         print("Successfully generated dataset.")
+
+    @staticmethod
+    def get_created_at_date_format():
+        return "%Y-%m-%d %H:%M:%S:%f"
