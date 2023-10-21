@@ -1,7 +1,7 @@
 import { Button, CircularProgress } from '@mui/material';
 
 function ActionButton(props) {
-    const { children, isLoading, type, variant = 2 } = props;
+    const { children, isLoading = false, type, variant = 2, onClick = () => {} } = props;
 
     function generateButtonClass() {
         switch(variant) {
@@ -27,6 +27,7 @@ function ActionButton(props) {
                 fontWeight: 600,
                 fontFamily: 'Inter, sans-serif',
             }}
+            onClick={onClick}
         >
             {isLoading ? (
                 <CircularProgress
