@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -6,8 +5,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
 function DropDownMUI(props) {
-    const { label, menuItems } = props;
-    const [value, setValue] = useState('');
+    const { label, menuItems, value, setValue } = props;
 
     function handleChange(event) {
         setValue(event.target.value);

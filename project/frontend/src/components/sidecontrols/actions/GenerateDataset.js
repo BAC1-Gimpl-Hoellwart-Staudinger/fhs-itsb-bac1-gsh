@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { SideControlsContext } from '../../../contexts/SideControlsContext';
 import { useAsyncFn } from '../../../hooks/useAsync';
 import { getDataset } from '../../../utils/ApiRequest';
 import Date from '../../../utils/Date';
@@ -10,6 +11,7 @@ import toast from 'react-hot-toast';
 import dayjs from 'dayjs';
 
 function GenerateDataset() {
+    const { LOCAL_STORAGE_DATASETS_KEY, setDatasetSize } = useContext(SideControlsContext);
     const { isLoading, execute: getDatasetExecute } = useAsyncFn(getDataset);
     const [selectedDatePickerDateStart, setSelectedDatePickerDateStart] = useState(dayjs().startOf('month'));
     const [selectedDatePickerDateEnd, setSelectedDatePickerDateEnd] = useState(dayjs().endOf('month').add(1, 'year'));
@@ -37,14 +39,17 @@ function GenerateDataset() {
             numberOfEmployees
         )
             .then((dataset) => {
-                const existingAppointments = JSON.parse(window.localStorage.getItem('appointments')) || [];
+                const existingDatasets = JSON.parse(window.localStorage.getItem(LOCAL_STORAGE_DATASETS_KEY)) || [];
 
-                if(existingAppointments.length > 5) {
-                    existingAppointments.splice(0, existingAppointments.length);
+                if(existingDatasets.length > 5) {
+                    existingDatasets.splice(0, existingDatasets.length);
+                    setDatasetSize(0);
+                    toast.error('Clearing datasets due to limit of 5', { duration: 3000, icon: '🗑️' });
                 }
 
-                const mergedAppointments = [...existingAppointments, dataset];
-                window.localStorage.setItem('appointments', JSON.stringify(mergedAppointments));
+                const mergedDatasets = [...existingDatasets, dataset];
+                window.localStorage.setItem(LOCAL_STORAGE_DATASETS_KEY, JSON.stringify(mergedDatasets));
+                setDatasetSize(mergedDatasets.length);
 
                 toast.success('Successfully fetched dataset', { duration: 3000 });
             })
@@ -53,7 +58,7 @@ function GenerateDataset() {
 
     return (
         <ActionFormContainer
-            handleSubmit={handleSubmit}
+            onSubmit={handleSubmit}
         >
             <div className="flex flex-row justify-between md:gap-10 gap-5">
                 <DatePickerMUI

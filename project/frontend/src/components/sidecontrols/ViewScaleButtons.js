@@ -8,25 +8,25 @@ function ViewScaleButtons() {
 
     return (
         <div className="flex">
-                <button
-                    className={`${commonStyle} rounded-l-md`}
-                    onClick={() => setViewScale(VIEW_SCALES.day)}
-                >
-                    Today
-                </button>
-                <button
-                    className={commonStyle}
-                    onClick={() => setViewScale(VIEW_SCALES.week)}
-                >
-                    Week
-                </button>
-                <button
-                    className={`${commonStyle} rounded-r-md`}
-                    onClick={() => setViewScale(VIEW_SCALES.month)}
-                >
-                    Month
-                </button>
-            </div>
+            <button
+                className={`${commonStyle} rounded-l-md`}
+                onClick={() => setViewScale(VIEW_SCALES.day)}
+            >
+                Today
+            </button>
+            <button
+                className={commonStyle}
+                onClick={() => setViewScale(VIEW_SCALES.week)}
+            >
+                Week
+            </button>
+            <button
+                className={`${commonStyle} rounded-r-md`}
+                onClick={() => setViewScale(VIEW_SCALES.month)}
+            >
+                Month
+            </button>
+        </div>
     );
 }
 
