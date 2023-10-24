@@ -1,5 +1,5 @@
 from datetime import timedelta
-from .helper_functions import string_to_date
+from .helper_functions import string_to_date,get_austrian_holidays_dates
 import numpy as np
 
 
@@ -11,10 +11,13 @@ class GeneticAlgorithm:
         end__date = string_to_date(end_date)
         weekdays = []
         weekends = []
+        holidays = []
+        holiday_list = get_austrian_holidays_dates(start__date, end__date)
 
         for _ in range(len((data['employees']))):
             weekdays.append(0)
             weekends.append(0)
+            holidays.append(0)
         counter = 0
         while start__date <= end__date:
             start__date += delta
@@ -23,6 +26,8 @@ class GeneticAlgorithm:
                 weekends[schedule[counter]-1] += 1
             else:
                 weekdays[schedule[counter]-1] += 1
+            if start__date in holiday_list:
+                holidays[schedule[counter]-1] += 1
             counter += 1
 
         mean_weekdays = np.mean(weekdays)
