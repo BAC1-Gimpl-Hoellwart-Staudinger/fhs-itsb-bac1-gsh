@@ -73,8 +73,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'employee_scheduling.wsgi.application'
 CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_METHODS = ['GET', 'POST']  # Add other HTTP methods as needed
-CORS_ALLOW_HEADERS = ['Content-Type']
 
 
 # Database
