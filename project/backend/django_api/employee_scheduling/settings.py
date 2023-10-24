@@ -31,19 +31,20 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'rest_framework',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     # TODO: enable CSRF protection in production
     #'django.middleware.csrf.CsrfViewMiddleware',
@@ -71,6 +72,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'employee_scheduling.wsgi.application'
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_METHODS = ['GET', 'POST']  # Add other HTTP methods as needed
+CORS_ALLOW_HEADERS = ['Content-Type']
 
 
 # Database
