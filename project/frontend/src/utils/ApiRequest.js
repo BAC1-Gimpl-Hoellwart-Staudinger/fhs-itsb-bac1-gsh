@@ -5,8 +5,8 @@ import axios from 'axios';
 function sendApiRequest(url, options = {}) {
     const api = axios.create({
         baseURL: (process.env.NODE_ENV === 'production' ? process.env.REACT_APP_API_URL : process.env.REACT_APP_API_URL_DEV),
-        crossDomain: true,
-        withCredentials: true,
+        //crossDomain: true,
+        //withCredentials: true,
     });
 
     return api(url, options)
