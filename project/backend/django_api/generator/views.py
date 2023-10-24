@@ -4,6 +4,7 @@ import json
 
 from .employee_generator import EmployeeGenerator
 from .schedule_generator import ScheduleGenerator
+from .genetic_algorithm import GeneticAlgorithm
 from .helper_functions import string_to_date, date_to_formatted_string
 
 
@@ -114,6 +115,8 @@ def generate(request):
 
         # TODO: implement genetic algorithm and replace this sample schedule
         schedule, execution_time_ms = ScheduleGenerator.generate_sample_schedule(start_date, end_date, employees_body)
+#        fitness_of_schedule = GeneticAlgorithm.fitness(schedule, start_date, end_date, employees_body)
+ #       print(fitness_of_schedule)
 
         metadata['algorithm_execution_time_ms'] = execution_time_ms
         dataset = {

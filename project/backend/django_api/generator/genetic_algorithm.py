@@ -5,7 +5,7 @@ import numpy as np
 
 class GeneticAlgorithm:
     @staticmethod
-    def fitness(schedule, start_date, end_date, data):
+    def fitness(schedule, start_date, end_date, employees):
         delta = timedelta(days=1)
         start__date = string_to_date(start_date)
         end__date = string_to_date(end_date)
@@ -14,7 +14,7 @@ class GeneticAlgorithm:
         holidays = []
         holiday_list = get_austrian_holidays_dates(start__date, end__date)
 
-        for _ in range(len((data['employees']))):
+        for _ in range(employees):
             weekdays.append(0)
             weekends.append(0)
             holidays.append(0)
