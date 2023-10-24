@@ -31,15 +31,29 @@
 }
 
 @font-face {
-    font-family: 'Poppins';
-    src: url('../public/fonts/Poppins-Regular.ttf') format('truetype');
+    font-family: 'Figtree';
+    src: url('../public/fonts/Figtree-Regular.ttf') format('truetype');
     font-weight: 400;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'Poppins';
-    src: url('../public/fonts/Poppins-Bold.ttf') format('truetype');
+    font-family: 'Figtree';
+    src: url('../public/fonts/Figtree-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Figtree';
+    src: url('../public/fonts/Figtree-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Figtree';
+    src: url('../public/fonts/Figtree-Bold.ttf') format('truetype');
     font-weight: 700;
     font-style: normal;
 }
@@ -52,16 +66,7 @@
     line-height: 1;
 }
 
-.font-poppins {
-    font-family: 'Poppins', sans-serif;
-}
-
-.font-poppins-bold {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 700;
-}
-
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-weight: 700;
 }

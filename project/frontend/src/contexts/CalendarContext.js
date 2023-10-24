@@ -1,19 +1,24 @@
 import React, { createContext, useState, useEffect } from 'react';
-import Appointment from '../utils/Appointment';
 import dayjs from 'dayjs';
 
 const CalendarContext = createContext();
 
 function CalendarProvider({ children }) {
     let initialAppointments = [];
-    if (process.env.NODE_ENV !== 'production') {
+    /*if (process.env.NODE_ENV !== 'production') {
         for(let i = 0; i < 4; i++) {
             initialAppointments.push(Appointment.generateAppointment());
         }
-    }
+    }*/
+
+    const VIEW_SCALES = {
+        day: 'DAY',
+        week: 'WEEK',
+        month: 'MONTH',
+    };
 
     const [date, setDate] = useState(dayjs());
-    const [viewScale, setViewScale] = useState('month');
+    const [viewScale, setViewScale] = useState(VIEW_SCALES.month);
     const [appointments, setAppointments] = useState(initialAppointments);
     const [dialogPosition, setInternalDialogPosition] = useState(null);
     const [selectedDate, setSelectedDate] = useState(null);
@@ -25,6 +30,7 @@ function CalendarProvider({ children }) {
     const DIALOG_WIDTH = 380;
 
     function setDialogPosition(event) {
+        // TODO: didn't check if dialog is vertically out of bounds
         // check if dialog will be out of bounds
         if (event.clientX + DIALOG_WIDTH > window.innerWidth) {
             setInternalDialogPosition({
@@ -78,6 +84,7 @@ function CalendarProvider({ children }) {
             editAppointment,
             setEditAppointment,
             DIALOG_WIDTH,
+            VIEW_SCALES,
         }}>
             {children}
         </CalendarContext.Provider>
