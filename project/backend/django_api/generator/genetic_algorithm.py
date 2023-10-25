@@ -7,14 +7,18 @@ from .schedule_generator import ScheduleGenerator
 class GeneticAlgorithm:
     @staticmethod
     def genetic_algorithm(start_date, end_date, metadata_body):
-        population = []
-        for i in range(100000):
-            population.append(ScheduleGenerator.generate_sample_schedule(start_date,end_date,metadata_body['employees'])[0])
+        population = GeneticAlgorithm.generate_population(start_date,end_date,metadata_body,1000)
         rankedschedules = []
         for s in population:
             rankedschedules.append((GeneticAlgorithm.fitness(s, start_date, end_date, metadata_body),s))
         rankedschedules.sort()
-        print(rankedschedules[0][0])
+
+    @staticmethod
+    def generate_population(start_date, end_date, metadata_body,size):
+        population = []
+        for _ in range(size):
+            population.append(ScheduleGenerator.generate_sample_schedule(start_date, end_date, metadata_body['employees'])[0])
+        return population
 
     @staticmethod
     def fitness(schedule, start_date, end_date, data):
