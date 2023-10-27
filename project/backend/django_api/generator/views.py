@@ -47,8 +47,8 @@ def generate(request):
                 'error': f'numEmployees must be between {min_employees} and {max_employees}'
             }, status=400)
 
-        min_vacation_days = 2
-        max_vacation_days = 10
+        min_vacation_days = 1
+        max_vacation_days = 2
 
         employees = EmployeeGenerator.generate(num_employees, start_date, end_date, min_vacation_days, max_vacation_days)
 
@@ -114,9 +114,8 @@ def generate(request):
         }
 
         # TODO: implement genetic algorithm and replace this sample schedule
-        schedule, execution_time_ms = ScheduleGenerator.generate_sample_schedule(start_date, end_date, employees_body)
-#        fitness_of_schedule = GeneticAlgorithm.fitness(schedule, start_date, end_date, employees_body)
- #       print(fitness_of_schedule)
+        # schedule, execution_time_ms = ScheduleGenerator.generate_sample_schedule(start_date, end_date, employees_body)
+        schedule, execution_time_ms = GeneticAlgorithm.genetic_algorithm(start_date, end_date, metadata_body)
 
         metadata['algorithm_execution_time_ms'] = execution_time_ms
         dataset = {
