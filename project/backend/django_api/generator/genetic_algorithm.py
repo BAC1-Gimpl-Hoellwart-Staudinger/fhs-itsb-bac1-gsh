@@ -1,29 +1,76 @@
-from datetime import timedelta
-from .helper_functions import string_to_date,get_austrian_holidays_dates
+from datetime import timedelta, date
+from .helper_functions import string_to_date, get_austrian_holidays_dates
 import numpy as np
+import random
+from timeit import default_timer as timer
 from .schedule_generator import ScheduleGenerator
 
 
 class GeneticAlgorithm:
     @staticmethod
     def genetic_algorithm(start_date, end_date, metadata_body):
-        population = GeneticAlgorithm.generate_population(start_date,end_date,metadata_body,1000)
-        rankedschedules = []
-        for s in population:
-            rankedschedules.append((GeneticAlgorithm.fitness(s, start_date, end_date, metadata_body),s))
-        rankedschedules.sort()
+        global bestschedules
+        execution_time_start = timer()
+        population = GeneticAlgorithm.generate_population(start_date, end_date, metadata_body, 1000)
+        for gen in range(1000):
+            rankedschedules = GeneticAlgorithm.eval_fitness(population, start_date, end_date, metadata_body)
+            if gen == 0:
+                bestschedules = rankedschedules[:100]
+            bestschedules = rankedschedules  # unnecessary needs to be refactored
+            newschedule = []
+            print(f'<===Best Solution Gen {gen}: {bestschedules[0][0]}==> ')
+            if bestschedules[0][0] < 350:
+                execution_time_end = timer()
+                execution_time_ms = round((execution_time_end - execution_time_start) * 1000, 2)
+                return bestschedules[0][1], execution_time_ms
+
+            for s in bestschedules:
+                if s[0] < 10000:
+                    newschedule.append(s[1])
+
+            for _ in range(int(len(bestschedules) / 2)):
+                list_tmp1 = random.choice(newschedule)
+                randindex1 = random.randint(0, len(list_tmp1) - 8)
+                elem1 = list_tmp1[randindex1:randindex1 + 7]
+                randindex2 = random.randint(0, len(newschedule) - 1)
+                tmp_listelem = newschedule[randindex2]
+                tmp_listelem[random.randint(0, len(tmp_listelem)) - 1] = random.randint(1, 4)
+
+                if randindex1 < len(tmp_listelem):
+                    tmp_listelem[randindex1:randindex1 + 7] = elem1
+
+                newschedule[randindex2] = tmp_listelem
+            population = newschedule
+        execution_time_end = timer()
+        execution_time_ms = round((execution_time_end - execution_time_start) * 1000, 2)
+        return bestschedules[0][0], execution_time_ms
 
     @staticmethod
-    def generate_population(start_date, end_date, metadata_body,size):
+    def generate_population(start_date, end_date, metadata_body, size):
         population = []
         for _ in range(size):
-            population.append(ScheduleGenerator.generate_sample_schedule(start_date, end_date, metadata_body['employees'])[0])
+            population.append(
+                ScheduleGenerator.generate_sample_schedule(start_date, end_date, metadata_body['employees'])[0])
         return population
+
+    @staticmethod
+    def eval_fitness(population, start_date, end_date, metadata_body):
+        rankedschedules = []
+        for s in population:
+            rankedschedules.append((GeneticAlgorithm.fitness(s, start_date, end_date, metadata_body), s))
+        rankedschedules.sort()
+        return rankedschedules
 
     @staticmethod
     def fitness(schedule, start_date, end_date, data):
         delta = timedelta(days=1)
         employees = data['employees']
+        vac_schedule = []
+        for employee in employees:
+            vac_schedule.append([string_to_date(date) for date in employee['vacation_schedule']])
+        for s in vac_schedule:
+            for i in range(len(s)):
+                s[i] = s[i].date()
         start__date = start_date.date()
         end__date = end_date.date()
         weekdays = []
@@ -37,12 +84,15 @@ class GeneticAlgorithm:
         counter = 0
         while start__date <= end__date:
             day = start__date.weekday()
+            if start__date in vac_schedule[schedule[counter] - 1]:
+                return 10000
+
             if day == 5 or day == 6:
-                weekends[schedule[counter]-1] += 1
+                weekends[schedule[counter] - 1] += 1
             else:
-                weekdays[schedule[counter]-1] += 1
+                weekdays[schedule[counter] - 1] += 1
             if start__date in holiday_list:
-                holidays[schedule[counter]-1] += 1
+                holidays[schedule[counter] - 1] += 1
             counter += 1
             start__date += delta
 
@@ -53,7 +103,7 @@ class GeneticAlgorithm:
         deviation_weekends = 0
         deviation_holidays = 0
 
-        for s in zip(weekdays, weekends,holidays):
+        for s in zip(weekdays, weekends, holidays):
             deviation_weekdays += abs(mean_weekdays - s[0])
             deviation_weekends += abs(mean_weekends - s[1])
             deviation_holidays += abs(mean_holidays - s[2])
