@@ -25,7 +25,7 @@ class ScheduleGenerator:
         while start__date < end__date:
             employee = random.choice(employees)
             vac_schedule_tmp = vac_schedule[employee['id']-1]
-            while check_holiday(start_date, vac_schedule_tmp) is not True:
+            while check_holiday(start__date, vac_schedule_tmp) is not True:
                 employee = random.choice(employees)
                 vac_schedule_tmp = vac_schedule[employee['id']-1]
             schedule.append(employee['id'])
