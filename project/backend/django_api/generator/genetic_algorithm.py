@@ -47,7 +47,7 @@ class GeneticAlgorithm:
             population = newschedule
         execution_time_end = timer()
         execution_time_ms = round((execution_time_end - execution_time_start) * 1000, 2)
-        return bestschedules[0][0], execution_time_ms
+        return bestschedules[0][1], execution_time_ms
 
     @staticmethod
     def generate_population(start_date, end_date, metadata_body, size):
