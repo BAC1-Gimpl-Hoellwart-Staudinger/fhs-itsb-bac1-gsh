@@ -107,9 +107,9 @@ def generate(request):
                 }, status=400)
 
         metadata = {
-            "start_date": start_date,
-            "end_date": end_date,
-            "created_at_date": created_at_date,
+            "start_date": date_to_formatted_string(start_date),
+            "end_date": date_to_formatted_string(end_date),
+            "created_at_date": date.strftime(created_at_date, EmployeeGenerator.get_created_at_date_format()),
             "employees": employees_body
         }
 
