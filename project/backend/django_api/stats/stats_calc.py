@@ -3,7 +3,7 @@ import numpy as np
 import random
 from timeit import default_timer as timer
 
-from stats.helper_functions import string_to_date
+from stats.helper_functions import string_to_date, get_austrian_holidays_dates, check_holiday
 
 class Stats:
     @staticmethod
@@ -19,25 +19,22 @@ class Stats:
 
         num_days = (end_date - start_date).days + 1
 
-        days_worked = {}
-        for empl_id_day in schedule:
-            days_worked[empl_id_day]+=1
+        holiday_days = get_austrian_holidays_dates(start_date, end_date)
 
-        most_working_employee = max(days_worked)
-        most_working_employee_name = empl_id_name[most_working_employee]
-        least_working_employee = min(days_worked)
-        least_working_employee_name = empl_id_name[least_working_employee]
+        days_worked = {}
+        for empl_id_day, i in schedule:
+            days_worked[empl_id_day]['sum']+=1
+            date = start_date + timedelta(days=i)
+            if date.weekday() < 5 and date not in holiday_days:
+                days_worked[empl_id_day]['work_days']+=1
+            else:
+                days_worked[empl_id_day]['weekend_holiday_days']+=1
 
         stats = {
             "total_days": num_days,
             "total_employees": cnt_empl,
             "days_worked_per_employee": days_worked,
-            "most_working_employee": most_working_employee_name,
-            "least_working_employee": least_working_employee_name,
-            "most_working_employee_days": days_worked[most_working_employee],
-            "least_working_employee_days": days_worked[least_working_employee]
         }
-        # TODO add weekend and holiday stats ...
 
         return stats
 
