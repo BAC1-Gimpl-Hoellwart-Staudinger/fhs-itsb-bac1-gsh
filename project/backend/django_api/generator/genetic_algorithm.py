@@ -9,35 +9,39 @@ from .schedule_generator import ScheduleGenerator
 class GeneticAlgorithm:
     @staticmethod
     def genetic_algorithm(start_date, end_date, metadata_body):
-        global bestschedules
         execution_time_start = timer()
-        population = GeneticAlgorithm.generate_population(start_date, end_date, metadata_body, 1000)
-        for gen in range(1000):
+        population = GeneticAlgorithm.generate_population(start_date, end_date, metadata_body, 10000)
+        for gen in range(10000):
             rankedschedules = GeneticAlgorithm.eval_fitness(population, start_date, end_date, metadata_body)
             if gen == 0:
-                bestschedules = rankedschedules[:100]
-            bestschedules = rankedschedules  # unnecessary needs to be refactored
+                bestschedules = rankedschedules[:500]
+            else:
+                bestschedules = rankedschedules  # unnecessary needs to be refactored
             newschedule = []
-            print(f'<===Best Solution Gen {gen}: {bestschedules[0][0]}==> ')
-            if bestschedules[0][0] < 350:
+            if gen % 500 == 0 or bestschedules[0][0] < 200:
+                print(f'<=== Population Size: {len(bestschedules)} Best Solution Gen ({gen}): {bestschedules[0][0]} ==> ')
+
+            if bestschedules[0][0] < 200:
                 execution_time_end = timer()
                 execution_time_ms = round((execution_time_end - execution_time_start) * 1000, 2)
                 return bestschedules[0][1], execution_time_ms
 
             for s in bestschedules:
-                if s[0] < 10000:
+                if s[0] < 2000:
                     newschedule.append(s[1])
 
-            for _ in range(int(len(bestschedules) / 2)):
-                list_tmp1 = random.choice(newschedule)
-                randindex1 = random.randint(0, len(list_tmp1) - 8)
-                elem1 = list_tmp1[randindex1:randindex1 + 7]
+            for _ in range(int(len(bestschedules)/4)):
+                tmp_newsched = newschedule[:25]
+                list_tmp1 = random.choice(tmp_newsched)
+                randindex1 = random.randint(0, len(list_tmp1) - 30)
+                elem1 = list_tmp1[randindex1:randindex1 + 30]
                 randindex2 = random.randint(0, len(newschedule) - 1)
                 tmp_listelem = newschedule[randindex2]
-                tmp_listelem[random.randint(0, len(tmp_listelem)) - 1] = random.randint(1, 4)
+                if random.randint(1, 100) == 3:
+                    tmp_listelem[random.randint(0, len(tmp_listelem)) - 1] = random.randint(1, 4)
 
                 if randindex1 < len(tmp_listelem):
-                    tmp_listelem[randindex1:randindex1 + 7] = elem1
+                    tmp_listelem[randindex1:randindex1 + 30] = elem1
 
                 newschedule[randindex2] = tmp_listelem
             population = newschedule
@@ -67,7 +71,7 @@ class GeneticAlgorithm:
         employees = data['employees']
         vac_schedule = []
         for employee in employees:
-            vac_schedule.append([string_to_date(date) for date in employee['vacation_schedule']])
+            vac_schedule.append([string_to_date(date_) for date_ in employee['vacation_schedule']])
         for s in vac_schedule:
             for i in range(len(s)):
                 s[i] = s[i].date()
@@ -82,7 +86,7 @@ class GeneticAlgorithm:
             weekends.append(0)
             holidays.append(0)
         counter = 0
-        while start__date <= end__date:
+        while start__date < end__date:
             day = start__date.weekday()
             if start__date in vac_schedule[schedule[counter] - 1]:
                 return 10000
