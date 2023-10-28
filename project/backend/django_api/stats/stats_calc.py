@@ -20,8 +20,6 @@ class Stats:
                 'weekend_holiday_days': 0
             }
 
-        print(metadata['created_at_date'])
-
         start_date = metadata['start_date']
         end_date = metadata['end_date']
 
@@ -29,7 +27,6 @@ class Stats:
 
         holiday_days = get_austrian_holidays_dates(start_date, end_date)
 
-        print(days_worked)
         for i, empl_id_day in enumerate(schedule):
             days_worked[empl_id_day]['sum']+=1
             date = start_date + timedelta(days=i)
