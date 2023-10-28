@@ -47,8 +47,8 @@ def generate(request):
                 'error': f'numEmployees must be between {min_employees} and {max_employees}'
             }, status=400)
 
-        min_vacation_days = 1
-        max_vacation_days = 2
+        min_vacation_days = 2
+        max_vacation_days = 10
 
         employees = EmployeeGenerator.generate(num_employees, start_date, end_date, min_vacation_days, max_vacation_days)
 
