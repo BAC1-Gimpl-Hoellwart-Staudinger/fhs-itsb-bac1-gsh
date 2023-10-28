@@ -20,7 +20,7 @@ def stats(request):
     employees_body = metadata_body['employees']
 
     schedule = json_data['schedule']
-    execution_time_ms = metadata['algorithm_execution_time_ms']
+    execution_time_ms = metadata_body['algorithm_execution_time_ms']
 
     if (metadata_body is None or start_date_body is None or end_date_body is None or schedule is None
             or created_at_date_body is None or employees_body is None):
@@ -36,7 +36,7 @@ def stats(request):
         created_at_date = datetime.strptime(created_at_date_body, created_at_date_format)
     except ValueError:
         return JsonResponse({
-            'error': f'start_date, end_date must be in YYYY-MM-DD and'
+            'error': f'start_date {start_date}, end_date must be in YYYY-MM-DD and'
                      f'create_at_date must be in {created_at_date_format} format'
         }, status=400)
 
@@ -77,7 +77,7 @@ def stats(request):
 
     dataset = {
         "metadata": metadata,
-        "schedule": schedule,
+        #"schedule": schedule,
         "stats": stats
     }
 
