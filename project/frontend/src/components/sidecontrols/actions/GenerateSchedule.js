@@ -42,11 +42,15 @@ function GenerateSchedule() {
             .then((schedule) => {
                 const appointments = Appointment.APIDatasetToAppointments(schedule);
                 setAppointments(appointments);
-                getStatsExecute(schedule).then((stats)=>{
-                    setStats(stats);
-                    toast.success('Successfully calculated stats', { duration: 3000 });
-                });
+
                 toast.success('Successfully displayed schedule', { duration: 3000 });
+
+                getStatsExecute(schedule)
+                    .then((stats) => {
+                        setStats(stats);
+                        toast.success('Successfully calculated stats', { duration: 3000 });
+                    })
+                    .catch((err) => toast.error(err));
             })
             .catch((err) => toast.error(err));
     }
