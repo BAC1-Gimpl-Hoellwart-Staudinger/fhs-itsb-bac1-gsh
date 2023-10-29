@@ -34,4 +34,13 @@ function getSchedule(dataset) {
     });
 }
 
-export { getDataset, getSchedule };
+function getStats(dataset) {
+    return sendApiRequest('/stats/', {
+        method: 'POST',
+        data: {
+            ...dataset,
+        },
+    });
+}
+
+export { getDataset, getSchedule, getStats };
