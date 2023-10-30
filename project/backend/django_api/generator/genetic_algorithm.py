@@ -27,17 +27,17 @@ class GeneticAlgorithm:
                 return bestschedules[0][1], execution_time_ms
 
             for s in bestschedules:
-                if s[0] < 2000:
+                if s[0] < 10000:
                     newschedule.append(s[1])
 
+            tmp_newsched = newschedule[:25]
             for _ in range(int(len(bestschedules)/4)):
-                tmp_newsched = newschedule[:25]
                 list_tmp1 = random.choice(tmp_newsched)
                 randindex1 = random.randint(0, len(list_tmp1) - 30)
                 elem1 = list_tmp1[randindex1:randindex1 + 30]
                 randindex2 = random.randint(0, len(newschedule) - 1)
                 tmp_listelem = newschedule[randindex2]
-                if random.randint(1, 100) == 3:
+                if random.randint(1, 500) == 3:
                     tmp_listelem[random.randint(0, len(tmp_listelem)) - 1] = random.randint(1, 4)
 
                 if randindex1 < len(tmp_listelem):
@@ -45,6 +45,9 @@ class GeneticAlgorithm:
 
                 newschedule[randindex2] = tmp_listelem
             population = newschedule
+            while len(population) < 500:
+                population.append((ScheduleGenerator.generate_sample_schedule(start_date, end_date, metadata_body['employees'])[0]))
+
         execution_time_end = timer()
         execution_time_ms = round((execution_time_end - execution_time_start) * 1000, 2)
         return bestschedules[0][1], execution_time_ms
@@ -90,7 +93,7 @@ class GeneticAlgorithm:
             day = start__date.weekday()
             if start__date in vac_schedule[schedule[counter] - 1]:
                 return 10000
-
+            # pandas to datetime
             if day == 5 or day == 6:
                 weekends[schedule[counter] - 1] += 1
             else:
