@@ -2,7 +2,7 @@ import { useContext, useState, useEffect } from 'react';
 import { SideControlsContext } from '../../../contexts/SideControlsContext';
 import { CalendarContext } from '../../../contexts/CalendarContext';
 import { useAsyncFn } from '../../../hooks/useAsync';
-import { getSchedule } from '../../../utils/ApiRequest';
+import { getSchedule, getStats } from '../../../utils/ApiRequest';
 import ReactJson from 'react-json-view';
 import ActionFormContainer from './ActionFormContainer';
 import DropDownMUI from '../../inputs/DropDownMUI';
@@ -12,9 +12,10 @@ import toast from 'react-hot-toast';
 import Appointment from '../../../utils/Appointment';
 
 function GenerateSchedule() {
-    const { LOCAL_STORAGE_DATASETS_KEY, datasetSize } = useContext(SideControlsContext);
+    const { LOCAL_STORAGE_DATASETS_KEY, datasetSize, setStats } = useContext(SideControlsContext);
     const { setAppointments } = useContext(CalendarContext);
     const { isLoading, execute: getScheduleExecute } = useAsyncFn(getSchedule);
+    const { isLoadingStats, execute: getStatsExecute } = useAsyncFn(getStats);
     const { showModal, setShowModal, Modal } = useModal();
     const [menuItems, setMenuItems] = useState([]);
     const [dropDownValue, setDropDownValue] = useState(menuItems.length > 0 ? menuItems[menuItems.length - 1].value : '');
@@ -41,7 +42,15 @@ function GenerateSchedule() {
             .then((schedule) => {
                 const appointments = Appointment.APIDatasetToAppointments(schedule);
                 setAppointments(appointments);
+
                 toast.success('Successfully displayed schedule', { duration: 3000 });
+
+                getStatsExecute(schedule)
+                    .then((stats) => {
+                        setStats(stats);
+                        toast.success('Successfully calculated stats', { duration: 3000 });
+                    })
+                    .catch((err) => toast.error(err));
             })
             .catch((err) => toast.error(err));
     }
@@ -96,7 +105,7 @@ function GenerateSchedule() {
             </ActionButton>
 
             <ActionButton
-                isLoading={isLoading}
+                isLoading={isLoading || isLoadingStats}
                 type="submit"
                 variant={1}
             >
