@@ -3,7 +3,7 @@ from datetime import date, datetime
 import json
 
 from .stats_calc import Stats
-from .helper_functions import string_to_date
+from generator.helper_functions import string_to_date
 
 
 def stats(request):
