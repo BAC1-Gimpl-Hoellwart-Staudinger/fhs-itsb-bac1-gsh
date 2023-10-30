@@ -11,7 +11,8 @@ class GeneticAlgorithm:
     def genetic_algorithm(start_date, end_date, metadata_body):
         execution_time_start = timer()
         population = GeneticAlgorithm.generate_population(start_date, end_date, metadata_body, 10000)
-        for gen in range(10000):
+        num_employees = len(metadata_body['employees'])
+        for gen in range(5000):
             rankedschedules = GeneticAlgorithm.eval_fitness(population, start_date, end_date, metadata_body)
             if gen == 0:
                 bestschedules = rankedschedules[:500]
@@ -19,15 +20,18 @@ class GeneticAlgorithm:
                 bestschedules = rankedschedules  # unnecessary needs to be refactored
             newschedule = []
             if gen % 500 == 0 or bestschedules[0][0] < 200:
-                print(f'<=== Population Size: {len(bestschedules)} Best Solution Gen ({gen}): {bestschedules[0][0]} ==> ')
+                print(
+                    f'<=== Population Size: {len(bestschedules)} Best Solution Gen ({gen}): {bestschedules[0][0]} ==> ')
 
-            if bestschedules[0][0] < 200:
+            if bestschedules[0][0] < num_employees*55:
                 execution_time_end = timer()
                 execution_time_ms = round((execution_time_end - execution_time_start) * 1000, 2)
+                print(
+                    f'<=== Population Size: {len(bestschedules)} Best Solution Gen ({gen}): {bestschedules[0][0]} ==> ')
                 return bestschedules[0][1], execution_time_ms
 
             for s in bestschedules:
-                if s[0] < 10000:
+                if s[0] < num_employees*500:
                     newschedule.append(s[1])
 
             tmp_newsched = newschedule[:25]
@@ -37,7 +41,7 @@ class GeneticAlgorithm:
                 elem1 = list_tmp1[randindex1:randindex1 + 30]
                 randindex2 = random.randint(0, len(newschedule) - 1)
                 tmp_listelem = newschedule[randindex2]
-                if random.randint(1, 500) == 3:
+                if random.randint(1, 50) == 3:
                     tmp_listelem[random.randint(0, len(tmp_listelem)) - 1] = random.randint(1, 4)
 
                 if randindex1 < len(tmp_listelem):
