@@ -16,7 +16,7 @@ function ViewStatistics() {
     }
 
     function displayStats() {
-        if(JSON.stringify(stats) === '{}' || !stats) {
+        if(!stats) {
             return (
                 <div className="h-full flex flex-col gap-3 items-center justify-center">
                     <PiWarningDuotone size={52} />
