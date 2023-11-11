@@ -7,6 +7,33 @@ import ActionButton from "./ActionButton";
 import useModal from "../../../hooks/useModal";
 import Plot from "react-plotly.js";
 
+function getColorForIndex(index) {
+  const colors = [
+    "rgb(37, 99, 235)",
+    "rgb(22, 163, 74)",
+    "rgb(202, 138, 4)",
+    "rgb(220, 38, 38)",
+    "rgb(79, 70, 229)",
+    "rgb(147, 51, 234)",
+    "rgb(219, 39, 119)",
+  ];
+  return colors[index % colors.length];
+
+}
+
+function getColorForIndexHoliday(index) {
+  const colors = [
+    "rgb(97, 120, 235)",
+    "rgb(82, 200, 74)",
+    "rgb(232, 198, 40)",
+    "rgb(220, 88, 88)",
+    "rgb(79, 70, 160)",
+    "rgb(200, 51, 234)",
+    "rgb(219, 89, 119)",
+  ];
+  return colors[index % colors.length];
+}
+
 function ViewStatistics() {
   const { showModal, setShowModal, Modal } = useModal();
   const { stats } = useContext(SideControlsContext);
@@ -96,22 +123,104 @@ function ViewStatistics() {
   }
 
   function drawACFs() {
-    if (!stats) {
-      return;
-    }
+    if (!stats) return;
+
     const empl = stats.stats.per_employee;
+    const employees = stats.metadata.employees;
     var data = [];
     empl.forEach((e) => {
+      const acf = e.acf;
+      const half_acf = acf.slice(Math.floor(acf.length / 2));
       data.push({
-        y: e.acf.slice(0, 10),
+        y: half_acf.slice(0, 20),
         type: "bar",
-        name: e.id,
+        marker: {
+          color: getColorForIndex(e.id - 1),
+        },
+        name: employees.filter((empl) => empl.id === e.id)[0].name,
       });
     });
 
-    const layout = {barmode: 'group', title: 'Autocorrelation Function'}
+    const layout = {
+      width: "1000",
+      barmode: "group",
+      title: "Autocorrelation Function",
+    };
 
-    return <Plot data={data} layout={layout} />;
+    return (
+      <div className="flex justify-center">
+        <Plot data={data} layout={layout} />
+      </div>
+    );
+  }
+
+  function drawWeekdayStats() {
+    if (!stats) return;
+
+    const empl = stats.stats.per_employee;
+    const employees = stats.metadata.employees;
+    var data = [];
+    empl.forEach((e, i) => {
+      const non_holiday = e.weekdays_worked.non_holiday;
+      data.push({
+        x: [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ],
+        y: non_holiday,
+        offsetgroup: i,
+        type: "bar",
+        marker: {
+          color: getColorForIndex(e.id - 1),
+        },
+        name: `${
+          employees.filter((empl) => empl.id === e.id)[0].name
+        } (non-holiday)`,
+      });
+    });
+
+    empl.forEach((e, i) => {
+      const holidays = e.weekdays_worked.holidays;
+      const non_holiday = e.weekdays_worked.non_holiday;
+      data.push({
+        x: [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ],
+        y: holidays,
+        offsetgroup: i,
+        base: non_holiday,
+        type: "bar",
+        marker: {
+          color: getColorForIndexHoliday(e.id - 1),
+        },
+        name: `${
+          employees.filter((empl) => empl.id === e.id)[0].name
+        } (holiday)`,
+      });
+    });
+
+    const layout = {
+      width: "1000",
+      barmode: "group",
+      title: "Weekdays worked per employees",
+    };
+
+    return (
+      <div className="flex justify-center">
+        <Plot data={data} layout={layout} />
+      </div>
+    );
   }
 
   return (
@@ -123,6 +232,7 @@ function ViewStatistics() {
       >
         {displayStats()}
         {drawACFs()}
+        {drawWeekdayStats()}
       </Modal>
 
       <ActionButton type="submit" variant={3}>
