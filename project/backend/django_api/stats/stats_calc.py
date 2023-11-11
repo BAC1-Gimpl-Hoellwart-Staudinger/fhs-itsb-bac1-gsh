@@ -16,7 +16,11 @@ class Stats:
                 'id': empl['id'],
                 'sum_days': 0,
                 'work_days': 0,
-                'weekend_holiday_days': 0
+                'weekend_holiday_days': 0,
+                'weekdays_worked': {
+                    'non_holiday': [0] * 7,
+                    'holidays': [0] * 7
+                }
             })
 
         start_date = metadata['start_date']
@@ -27,28 +31,28 @@ class Stats:
         holiday_days = get_austrian_holidays_dates(start_date, end_date)
 
         for i, empl_id_day in enumerate(schedule):
-            # could be nicer with filter or where
-            for empl_stat in per_empl_stats:
-                if empl_stat['id'] == empl_id_day:
-                    empl_stat['sum_days']+=1
-
             date = start_date + timedelta(days=i)
-            if date.weekday() < 5 and date not in holiday_days:
-                for empl_stat in per_empl_stats:
-                    if empl_stat['id'] == empl_id_day:
-                        empl_stat['work_days']+=1
-            else:
-                for empl_stat in per_empl_stats:
-                    if empl_stat['id'] == empl_id_day:
-                        empl_stat['weekend_holiday_days']+=1
-        # this could be in one of the previous loops
-        acfs = Stats.calculate_acfs(schedule)
-        # again liniear search, could be nicer
-        for empl_stat in per_empl_stats:
-            for acf in acfs:
-                if empl_stat['id'] == acf['id']:
-                    empl_stat['acf'] = acf['acf']
+            date = date.date()
 
+            # general workday / weekend / holiday count
+            if date.weekday() < 5 and date not in holiday_days:
+                list(filter(lambda one_empl_stat: one_empl_stat['id'] == empl_id_day, per_empl_stats))[0]['work_days']+=1
+            else:
+                list(filter(lambda one_empl_stat: one_empl_stat['id'] == empl_id_day, per_empl_stats))[0]['weekend_holiday_days']+=1
+
+            # workday / weekend / holiday cout per weekday
+            if date in holiday_days:
+                list(filter(lambda one_empl_stat: one_empl_stat['id'] == empl_id_day, per_empl_stats))[0]['weekdays_worked']['holidays'][date.weekday()] += 1
+            else:
+                list(filter(lambda one_empl_stat: one_empl_stat['id'] == empl_id_day, per_empl_stats))[0]['weekdays_worked']['non_holiday'][date.weekday()] += 1
+
+        for empl_stat in per_empl_stats:
+            empl_stat['sum_days'] = empl_stat['work_days'] + empl_stat['weekend_holiday_days']
+        
+        acfs = Stats.calculate_acfs(schedule)
+
+        for acf in acfs:
+            list(filter(lambda one_empl_stat: one_empl_stat['id'] == acf['id'], per_empl_stats))[0]['acf'] = acf['acf']
 
         stats = {
             "total_days": num_days,
@@ -57,9 +61,9 @@ class Stats:
         }
 
         return stats
-
+    
     @staticmethod
-    def calculate_acfs(schedule):
+    def get_sub_schedules(schedule):
         ids = []
         for id in schedule:
             if id not in ids:
@@ -74,7 +78,13 @@ class Stats:
                     sub_schedule.append(1)
                 else:
                     sub_schedule.append(0)
+
             schedules_per_employee.append({"id":id, "schedule":sub_schedule})
+        return schedules_per_employee
+
+    @staticmethod
+    def calculate_acfs(schedule):
+        schedules_per_employee = Stats.get_sub_schedules(schedule)
         
         acfs = []
         for empl_schedule in schedules_per_employee:
@@ -84,11 +94,20 @@ class Stats:
 
     @staticmethod
     def calculate_acf(schedule):
-        acf = []
-        s = pd.Series(schedule)
-        for i in range(int(len(schedule)/2)):
-            acf.append(s.autocorr(lag=i))
-        return acf
+        size = len(schedule)
+        rxx = [0] * (2 * size - 1)
+        for k in range(size):
+            rxx[size-1+k] = 0
+            for i in range(size-k):
+                rxx[size-1+k] += schedule[i] * schedule[i+k]
+            rxx[size-1+k] /= size - k
+        
+        for i in range(size):
+            rxx[size-1-i] = rxx[size-1+i]
+        
+        return rxx
+
+        
 
     @staticmethod
     def get_created_at_date_format():
