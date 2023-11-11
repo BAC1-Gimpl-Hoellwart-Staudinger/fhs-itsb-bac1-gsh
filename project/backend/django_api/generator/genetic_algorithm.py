@@ -25,7 +25,7 @@ class GeneticAlgorithm:
                 print(
                     f'<=== Population Size: {len(bestschedules)} Best Solution Gen ({gen}): {bestschedules[0][0]} ==> ')
 
-            if bestschedules[0][0] < num_employees * 55:
+            if bestschedules[0][0] <= num_employees * 55:
                 execution_time_end = timer()
                 execution_time_ms = round((execution_time_end - execution_time_start) * 1000, 2)
                 print(
@@ -35,7 +35,7 @@ class GeneticAlgorithm:
             for s in bestschedules:
                 if s[0] < num_employees * 500:
                     newschedule.append(s[1])
-            if(len(newschedule) > 460):
+            if len(newschedule) > 460:
                 newschedule = newschedule[:460]
             tmp_newsched = newschedule[:50]
             for _ in range(int(len(bestschedules) / 24)):
