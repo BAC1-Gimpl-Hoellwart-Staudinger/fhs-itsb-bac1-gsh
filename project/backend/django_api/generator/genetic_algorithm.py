@@ -110,7 +110,7 @@ class GeneticAlgorithm:
         counter = 0
         while start__date < end__date:
             day = start__date.weekday()
-            if start__date in vac_schedule[schedule[counter] - 1]:
+            if start__date in vac_schedule[schedule[counter] - 1]:  #  Todo: program chrashes with 2 employees if the breaking constraint isn't adjusted
                 return 10000
             # pandas to datetime
             if day == 5 or day == 6:
