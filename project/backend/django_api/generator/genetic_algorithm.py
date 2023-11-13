@@ -6,22 +6,22 @@ from timeit import default_timer as timer
 from .schedule_generator import ScheduleGenerator
 import pandas as pd
 
+
 class GeneticAlgorithm:
     @staticmethod
     def genetic_algorithm(start_date, end_date, metadata_body):
         execution_time_start = timer()
-        population = GeneticAlgorithm.generate_population(start_date, end_date, metadata_body, 10000)
+        population = GeneticAlgorithm.generate_population(start_date, end_date, metadata_body, 1000)
         num_employees = len(metadata_body['employees'])
         for gen in range(5000):
             rankedschedules = GeneticAlgorithm.eval_fitness(population, start_date, end_date, metadata_body)
             if gen == 0:
                 bestschedules = rankedschedules[:500]
             else:
-                bestschedules = rankedschedules[:500]  # unnecessary needs to be refactored
+                bestschedules = rankedschedules  # unnecessary needs to be refactored
             newschedule = []
-            if rankedschedules[0][0] == 10000:
-                print('error')
-            if gen % 500 == 0 or bestschedules[0][0] < 200:
+
+            if gen % 500 == 0:
                 print(
                     f'<=== Population Size: {len(bestschedules)} Best Solution Gen ({gen}): {bestschedules[0][0]} ==> ')
 
@@ -41,24 +41,10 @@ class GeneticAlgorithm:
             for _ in range(int(len(bestschedules) / 24)):
                 tmp_listelem1 = random.choice(tmp_newsched)
                 tmp_listelem2 = random.choice(tmp_newsched)
-                elem1 = tmp_listelem1[0:int(len(tmp_listelem1)/2)]
-                elem2 = tmp_listelem2[int(len(tmp_listelem2)/2):len(tmp_listelem2)]
-                """ old code for genetic algorithm
-                    list_tmp1 = random.choice(tmp_newsched)
-                    randindex1 = random.randint(0, len(list_tmp1) - 30)
-                    elem1 = list_tmp1[randindex1:randindex1 + 30]
-                    randindex2 = random.randint(0, len(newschedule) - 1)
-                    tmp_listelem = newschedule[randindex2]
-                    if random.randint(1, 50) == 3:
-                        tmp_listelem[random.randint(0, len(tmp_listelem)) - 1] = random.randint(1, 4)
-                    if randindex1 < len(tmp_listelem):
-                        tmp_listelem[randindex1:randindex1 + 30] = elem1
-                    newschedule[randindex2] = tmp_listelem
-                    population = newschedule      
-                """
+                elem1 = tmp_listelem1[0:int(len(tmp_listelem1) / 2)]
+                elem2 = tmp_listelem2[int(len(tmp_listelem2) / 2):len(tmp_listelem2)]
                 tmp_listelem = elem1 + elem2
                 if random.randint(1, 50) == 3:
-                    #  tmp_listelem_mut = random.choice(newschedule)
                     tmp_listelem[random.randint(0, len(tmp_listelem)) - 1] = random.randint(1, 4)
 
                 newschedule.append(tmp_listelem)
@@ -108,11 +94,11 @@ class GeneticAlgorithm:
             weekends.append(0)
             holidays.append(0)
         counter = 0
+
         while start__date < end__date:
             day = start__date.weekday()
-            if start__date in vac_schedule[schedule[counter] - 1]:  #  Todo: program chrashes with 2 employees if the breaking constraint isn't adjusted
-                return 10000
-            # pandas to datetime
+            if start__date in vac_schedule[schedule[counter] - 1]:  # program crashes with 2 employees if the
+                return 10000                                       # stopping constraint isn't adjusted
             if day == 5 or day == 6:
                 weekends[schedule[counter] - 1] += 1
             else:
@@ -121,11 +107,6 @@ class GeneticAlgorithm:
                 holidays[schedule[counter] - 1] += 1
             counter += 1
             start__date += delta
-
-        # acf = []
-        # s = pd.Series(schedule)
-        # for i in range(int(len(schedule) / 2)):
-        #    acf.append(s.autocorr(lag=i))
 
         mean_weekdays = np.mean(weekdays)
         mean_weekends = np.mean(weekends)
@@ -138,4 +119,4 @@ class GeneticAlgorithm:
             deviation_weekdays += abs(mean_weekdays - s[0])
             deviation_weekends += abs(mean_weekends - s[1])
             deviation_holidays += abs(mean_holidays - s[2])
-        return round((deviation_weekdays * 10) + (deviation_weekends * 50) + (deviation_holidays * 100),2)
+        return round((deviation_weekdays * 10) + (deviation_weekends * 50) + (deviation_holidays * 100), 2)
