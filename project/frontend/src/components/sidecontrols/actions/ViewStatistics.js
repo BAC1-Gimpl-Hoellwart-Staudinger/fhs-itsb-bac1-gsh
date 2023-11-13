@@ -58,6 +58,8 @@ function ViewStatistics() {
       const employeeCount = stats.stats.total_employees;
       const employees = stats.metadata.employees;
       const perEmployeeStats = stats.stats.per_employee;
+      let execTime = stats.metadata.algorithm_execution_time_ms /10;
+      execTime = Math.round(execTime) / 100;
 
       return (
         <div className="flex flex-col gap-4">
@@ -75,7 +77,7 @@ function ViewStatistics() {
             </p>
             <p className="text-lg">
               Schedule calculated for{" "}
-              <span className="font-semibold">{employeeCount}</span> employees:
+              <span className="font-semibold">{employeeCount}</span> employees in <span className="font-semibold">{execTime}</span>s:
             </p>
 
             <table className="border-collapse border table-auto mt-4 w-full">
