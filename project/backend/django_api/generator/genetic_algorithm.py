@@ -4,7 +4,6 @@ import numpy as np
 import random
 from timeit import default_timer as timer
 from .schedule_generator import ScheduleGenerator
-import pandas as pd
 import random
 
 class Individual:
@@ -23,7 +22,6 @@ class GeneticAlgorithm:
         MAX_ITER_SAME_BEST = 200
 
         random.seed(timer()) 
-        num_employees = len(metadata_body['employees'])
         population = GeneticAlgorithm.generate_population(start_date, end_date, metadata_body, POP_SIZE)
         population = GeneticAlgorithm.sort_population(population)
         previous_best = []

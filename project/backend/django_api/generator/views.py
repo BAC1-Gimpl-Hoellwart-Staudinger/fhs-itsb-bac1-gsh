@@ -3,7 +3,6 @@ from datetime import date, datetime
 import json
 
 from .employee_generator import EmployeeGenerator
-from .schedule_generator import ScheduleGenerator
 from .genetic_algorithm import GeneticAlgorithm
 from .helper_functions import string_to_date, date_to_formatted_string
 
@@ -113,8 +112,6 @@ def generate(request):
             "employees": employees_body
         }
 
-        # TODO: implement genetic algorithm and replace this sample schedule
-        # schedule, execution_time_ms = ScheduleGenerator.generate_sample_schedule(start_date, end_date, employees_body)
         schedule, execution_time_ms = GeneticAlgorithm.genetic_algorithm(start_date, end_date, metadata_body)
 
         metadata['algorithm_execution_time_ms'] = execution_time_ms
