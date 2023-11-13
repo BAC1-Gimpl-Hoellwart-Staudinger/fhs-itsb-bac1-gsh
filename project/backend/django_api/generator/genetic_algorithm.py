@@ -20,23 +20,30 @@ class GeneticAlgorithm:
         
         MAX_ITERATIONS = 10000
         POP_SIZE = 10
+        MAX_ITER_SAME_BEST = 200
 
         random.seed(timer()) 
         num_employees = len(metadata_body['employees'])
         population = GeneticAlgorithm.generate_population(start_date, end_date, metadata_body, POP_SIZE)
+        population = GeneticAlgorithm.sort_population(population)
+        previous_best = []
+        previous_best.append(population[0].fitness)
 
         for gen in range(MAX_ITERATIONS):
-            if gen % 500 == 0:
-                print( f'<=== Best Solution Gen ({gen}): {population[0].fitness} ==> ')
-            population = GeneticAlgorithm.sort_population(population)
             m_pool = GeneticAlgorithm.mating_pool(population)
 
             new_population = GeneticAlgorithm.combine_mutate(m_pool, start_date, end_date, metadata_body)
-            # elitist -> also keep individual of the old generation if they are better
+            # elitist -> also keep individual of the old generation if they are better -> chance for local minima
+            # if we dont want an elitist apporach combine_mutate needs to be changed to produce len(population) new individuals
+            # not not len(population) // 2
             population += new_population
             population = GeneticAlgorithm.sort_population(population)
             population = population[:POP_SIZE]
-            if population[0].fitness <= num_employees * 55:
+            if previous_best[-1] != population[0].fitness:
+                previous_best = []
+            previous_best.append(population[0].fitness)
+            if len(previous_best) >= MAX_ITER_SAME_BEST:
+                print(f'No improvement for {MAX_ITER_SAME_BEST} iterations. Stopping with generation {gen}')
                 break
 
         execution_time_end = timer()
