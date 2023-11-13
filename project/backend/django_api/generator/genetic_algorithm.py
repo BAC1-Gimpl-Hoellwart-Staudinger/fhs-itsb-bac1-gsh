@@ -31,9 +31,7 @@ class GeneticAlgorithm:
             m_pool = GeneticAlgorithm.mating_pool(population)
 
             new_population = GeneticAlgorithm.combine_mutate(m_pool, start_date, end_date, metadata_body)
-            # elitist -> also keep individual of the old generation if they are better -> chance for local minima
-            # if we dont want an elitist apporach combine_mutate needs to be changed to produce len(population) new individuals
-            # not not len(population) // 2
+            # elitist -> also keep individuals of the old generation if they are better than the newly generated ones
             population += new_population
             population = GeneticAlgorithm.sort_population(population)
             population = population[:POP_SIZE]
