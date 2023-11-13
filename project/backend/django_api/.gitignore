@@ -185,6 +185,8 @@ fabric.properties
 .idea
 .idea/*
 
+.vscode
+
 output
 output/*
 output/**/*

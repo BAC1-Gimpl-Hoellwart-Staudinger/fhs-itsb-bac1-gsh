@@ -5,73 +5,101 @@ import random
 from timeit import default_timer as timer
 from .schedule_generator import ScheduleGenerator
 import pandas as pd
+import random
 
+class Individual:
+    def __init__(self, schedule, fitness):
+        self.schedule = schedule
+        self.fitness = fitness
+    
 
 class GeneticAlgorithm:
     @staticmethod
     def genetic_algorithm(start_date, end_date, metadata_body):
         execution_time_start = timer()
-        population = GeneticAlgorithm.generate_population(start_date, end_date, metadata_body, 1000)
+        
+        MAX_ITERATIONS = 10000
+        POP_SIZE = 10
+
+        random.seed(timer()) 
         num_employees = len(metadata_body['employees'])
-        for gen in range(5000):
-            rankedschedules = GeneticAlgorithm.eval_fitness(population, start_date, end_date, metadata_body)
-            if gen == 0:
-                bestschedules = rankedschedules[:500]
-            else:
-                bestschedules = rankedschedules  # unnecessary needs to be refactored
-            newschedule = []
+        population = GeneticAlgorithm.generate_population(start_date, end_date, metadata_body, POP_SIZE)
 
+        for gen in range(MAX_ITERATIONS):
             if gen % 500 == 0:
-                print(
-                    f'<=== Population Size: {len(bestschedules)} Best Solution Gen ({gen}): {bestschedules[0][0]} ==> ')
+                print( f'<=== Best Solution Gen ({gen}): {population[0].fitness} ==> ')
+            population = GeneticAlgorithm.sort_population(population)
+            m_pool = GeneticAlgorithm.mating_pool(population)
 
-            if bestschedules[0][0] <= num_employees * 55:
-                execution_time_end = timer()
-                execution_time_ms = round((execution_time_end - execution_time_start) * 1000, 2)
-                print(
-                    f'<=== Population Size: {len(bestschedules)} Best Solution Gen ({gen}): {bestschedules[0][0]} ==> ')
-                return bestschedules[0][1], execution_time_ms
-
-            for s in bestschedules:
-                if s[0] < num_employees * 500:
-                    newschedule.append(s[1])
-            if len(newschedule) > 460:
-                newschedule = newschedule[:460]
-            tmp_newsched = newschedule[:50]
-            for _ in range(int(len(bestschedules) / 24)):
-                tmp_listelem1 = random.choice(tmp_newsched)
-                tmp_listelem2 = random.choice(tmp_newsched)
-                elem1 = tmp_listelem1[0:int(len(tmp_listelem1) / 2)]
-                elem2 = tmp_listelem2[int(len(tmp_listelem2) / 2):len(tmp_listelem2)]
-                tmp_listelem = elem1 + elem2
-                if random.randint(1, 50) == 3:
-                    tmp_listelem[random.randint(0, len(tmp_listelem)) - 1] = random.randint(1, 4)
-
-                newschedule.append(tmp_listelem)
-            population = newschedule
-            while len(population) < 500:
-                population.append(
-                    (ScheduleGenerator.generate_sample_schedule(start_date, end_date, metadata_body['employees'])[0]))
+            new_population = GeneticAlgorithm.combine_mutate(m_pool, start_date, end_date, metadata_body)
+            # elitist -> also keep individual of the old generation if they are better
+            population += new_population
+            population = GeneticAlgorithm.sort_population(population)
+            population = population[:POP_SIZE]
+            if population[0].fitness <= num_employees * 55:
+                break
 
         execution_time_end = timer()
         execution_time_ms = round((execution_time_end - execution_time_start) * 1000, 2)
-        return bestschedules[0][1], execution_time_ms
+        return population[0].schedule, execution_time_ms
 
     @staticmethod
     def generate_population(start_date, end_date, metadata_body, size):
         population = []
         for _ in range(size):
-            population.append(
-                ScheduleGenerator.generate_sample_schedule(start_date, end_date, metadata_body['employees'])[0])
+            schedule = ScheduleGenerator.generate_sample_schedule(start_date, end_date, metadata_body['employees'])[0]
+            population.append(Individual(schedule, GeneticAlgorithm.fitness(schedule, start_date, end_date, metadata_body)))
         return population
-
+    
     @staticmethod
-    def eval_fitness(population, start_date, end_date, metadata_body):
-        rankedschedules = []
-        for s in population:
-            rankedschedules.append((GeneticAlgorithm.fitness(s, start_date, end_date, metadata_body), s))
-        rankedschedules.sort()
-        return rankedschedules
+    def sort_population(population):
+        population.sort(key=lambda i: i.fitness)
+        return population
+    
+    @staticmethod
+    def mating_pool(population):
+        sum_fitness = 0
+        for i in population:
+            sum_fitness += i.fitness
+        for i in population:
+            i.relative_fitness = i.fitness / sum_fitness
+        mating_pool = []
+        while len(mating_pool) < len(population):
+            mating_pool.append(GeneticAlgorithm.select_individual(population))
+        return mating_pool
+    
+    @staticmethod
+    def select_individual(population):
+       # roulette wheel selection
+       r = random.random()
+       for i in population:
+            r -= i.relative_fitness
+            if r <= 0:
+                return i
+            
+    @staticmethod
+    def combine_mutate(mating_pool, start_date, end_date, metadata_body):
+        num_employees = len(metadata_body['employees'])
+
+        # one point crossover based on relative fitness
+        if len(mating_pool) % 2:
+            mating_pool.pop()
+        parent1 = mating_pool[:len(mating_pool)//2]
+        parent2 = mating_pool[len(mating_pool)//2:]
+
+        new_population = []
+        for i in range(len(parent1)):
+            crossover_point = parent1[i].fitness / (parent1[i].fitness + parent2[i].fitness)
+            crossover_point = int(crossover_point * len(parent1[i].schedule))
+            new_schedule = parent1[i].schedule[:crossover_point] + parent2[i].schedule[crossover_point:]
+            # mutatate one day with 1% probability
+            for i in range(len(new_schedule)):
+                if random.random() < 0.01:
+                    new_schedule[i] = random.randint(1, num_employees)
+            new_population.append(Individual(new_schedule, GeneticAlgorithm.fitness(new_schedule, start_date, end_date, metadata_body)))
+        return new_population
+
+
 
     @staticmethod
     def fitness(schedule, start_date, end_date, data):
@@ -97,8 +125,8 @@ class GeneticAlgorithm:
 
         while start__date < end__date:
             day = start__date.weekday()
-            if start__date in vac_schedule[schedule[counter] - 1]:  # program crashes with 2 employees if the
-                return 10000                                       # stopping constraint isn't adjusted
+            if start__date in vac_schedule[schedule[counter] - 1]:
+                return 10000
             if day == 5 or day == 6:
                 weekends[schedule[counter] - 1] += 1
             else:
