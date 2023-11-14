@@ -1,44 +1,38 @@
-from datetime import timedelta, date
+from datetime import timedelta
 from .helper_functions import string_to_date, get_austrian_holidays_dates
 import numpy as np
 import random
 from timeit import default_timer as timer
 from .schedule_generator import ScheduleGenerator
-import pandas as pd
-
 
 class GeneticAlgorithm:
     @staticmethod
     def genetic_algorithm(start_date, end_date, metadata_body):
+        populationSize = 100
         execution_time_start = timer()
-        population = GeneticAlgorithm.generate_population(start_date, end_date, metadata_body, 1000)
+        population = GeneticAlgorithm.generate_population(start_date, end_date, metadata_body, populationSize)
         num_employees = len(metadata_body['employees'])
         for gen in range(5000):
             rankedschedules = GeneticAlgorithm.eval_fitness(population, start_date, end_date, metadata_body)
-            if gen == 0:
-                bestschedules = rankedschedules[:500]
-            else:
-                bestschedules = rankedschedules  # unnecessary needs to be refactored
+            rankedschedules = rankedschedules[:populationSize]
             newschedule = []
 
-            if gen % 500 == 0:
+            if gen % 10 == 0:
                 print(
-                    f'<=== Population Size: {len(bestschedules)} Best Solution Gen ({gen}): {bestschedules[0][0]} ==> ')
+                    f'<=== Population Size: {len(rankedschedules)} Best Solution Gen ({gen}): {rankedschedules[0][0]} ==> ')
 
-            if bestschedules[0][0] <= num_employees * 55:
+            if rankedschedules[0][0] <= num_employees * 55:
                 execution_time_end = timer()
                 execution_time_ms = round((execution_time_end - execution_time_start) * 1000, 2)
                 print(
-                    f'<=== Population Size: {len(bestschedules)} Best Solution Gen ({gen}): {bestschedules[0][0]} ==> ')
-                return bestschedules[0][1], execution_time_ms
+                    f'<=== Population Size: {len(rankedschedules)} Best Solution Gen ({gen}): {rankedschedules[0][0]} ==> ')
+                return rankedschedules[0][1], execution_time_ms
 
-            for s in bestschedules:
+            for s in rankedschedules:
                 if s[0] < num_employees * 500:
                     newschedule.append(s[1])
-            if len(newschedule) > 460:
-                newschedule = newschedule[:460]
-            tmp_newsched = newschedule[:50]
-            for _ in range(int(len(bestschedules) / 24)):
+            tmp_newsched = newschedule[:int(populationSize/2)]
+            for _ in range(int(populationSize*0.1)):
                 tmp_listelem1 = random.choice(tmp_newsched)
                 tmp_listelem2 = random.choice(tmp_newsched)
                 elem1 = tmp_listelem1[0:int(len(tmp_listelem1) / 2)]
@@ -49,13 +43,13 @@ class GeneticAlgorithm:
 
                 newschedule.append(tmp_listelem)
             population = newschedule
-            while len(population) < 500:
+            while len(population) < populationSize:
                 population.append(
                     (ScheduleGenerator.generate_sample_schedule(start_date, end_date, metadata_body['employees'])[0]))
 
         execution_time_end = timer()
         execution_time_ms = round((execution_time_end - execution_time_start) * 1000, 2)
-        return bestschedules[0][1], execution_time_ms
+        return rankedschedules[0][1], execution_time_ms
 
     @staticmethod
     def generate_population(start_date, end_date, metadata_body, size):
@@ -88,6 +82,7 @@ class GeneticAlgorithm:
         weekdays = []
         weekends = []
         holidays = []
+        successive = 0
         holiday_list = get_austrian_holidays_dates(start__date, end__date)
         for _ in range(len(employees)):
             weekdays.append(0)
@@ -107,6 +102,9 @@ class GeneticAlgorithm:
                 holidays[schedule[counter] - 1] += 1
             counter += 1
             start__date += delta
+            if counter < len(schedule)-1:
+                if schedule[counter] == schedule[counter+1]:
+                    successive += 1
 
         mean_weekdays = np.mean(weekdays)
         mean_weekends = np.mean(weekends)
@@ -114,9 +112,8 @@ class GeneticAlgorithm:
         deviation_weekdays = 0
         deviation_weekends = 0
         deviation_holidays = 0
-
         for s in zip(weekdays, weekends, holidays):
             deviation_weekdays += abs(mean_weekdays - s[0])
             deviation_weekends += abs(mean_weekends - s[1])
             deviation_holidays += abs(mean_holidays - s[2])
-        return round((deviation_weekdays * 10) + (deviation_weekends * 50) + (deviation_holidays * 100), 2)
+        return round((deviation_weekdays * 10) + (deviation_weekends * 50) + (deviation_holidays * 100) + successive * 30, 2)
