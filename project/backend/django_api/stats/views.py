@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from datetime import date, datetime
+from datetime import datetime
 import json
 
 from .stats_calc import Stats

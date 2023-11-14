@@ -3,8 +3,7 @@ from datetime import date, datetime
 import json
 
 from .employee_generator import EmployeeGenerator
-from .schedule_generator import ScheduleGenerator
-from .genetic_algorithm import GeneticAlgorithm
+from .genetic_algorithm2 import GeneticAlgorithm2
 from .helper_functions import string_to_date, date_to_formatted_string
 
 
@@ -69,6 +68,7 @@ def generate(request):
         end_date_body = metadata_body['end_date']
         created_at_date_body = metadata_body['created_at_date']
         employees_body = metadata_body['employees']
+        algo_version = metadata_body['algo_version']
 
         if (metadata_body is None or start_date_body is None or end_date_body is None
                 or created_at_date_body is None or employees_body is None):
@@ -113,9 +113,21 @@ def generate(request):
             "employees": employees_body
         }
 
-        # TODO: implement genetic algorithm and replace this sample schedule
-        # schedule, execution_time_ms = ScheduleGenerator.generate_sample_schedule(start_date, end_date, employees_body)
-        schedule, execution_time_ms = GeneticAlgorithm.genetic_algorithm(start_date, end_date, metadata_body)
+        try:
+            algo_version=int(algo_version)
+        except ValueError:
+            return JsonResponse({
+                    'error': 'algo_version must be an integer'
+                }, status=400)
+
+        if algo_version is None or algo_version == 1:
+            schedule, execution_time_ms = GeneticAlgorithm.genetic_algorithm(start_date, end_date, metadata_body)
+        elif algo_version == 2:
+            schedule, execution_time_ms = GeneticAlgorithm2.genetic_algorithm(start_date, end_date, metadata_body)
+        else:
+            return JsonResponse({
+                    'error': 'algo_version must be 1 or 2'
+                }, status=400)
 
         metadata['algorithm_execution_time_ms'] = execution_time_ms
         dataset = {

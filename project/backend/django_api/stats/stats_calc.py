@@ -1,5 +1,4 @@
 from datetime import timedelta
-import pandas as pd
 
 from generator.helper_functions import get_austrian_holidays_dates
 
