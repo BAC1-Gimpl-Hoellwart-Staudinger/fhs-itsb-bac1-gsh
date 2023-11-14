@@ -33,11 +33,15 @@ class GeneticAlgorithm:
                 return rankedschedules[0][1], execution_time_ms
 
             for s in rankedschedules:
-                if s[0] < num_employees * 1000:
+                if s[0] < 1000000:
                     newschedule.append(s[1])
+            while len(newschedule) < populationSize:
+                newschedule.append(
+                    (ScheduleGenerator.generate_sample_schedule(start_date, end_date, metadata_body['employees'])[0]))
+
             for _ in range(int(populationSize * 0.5)):
-                tmp_listelem1 = random.choice(newschedule)
-                tmp_listelem2 = random.choice(newschedule)
+                tmp_listelem1 = newschedule[random.randint(0,len(newschedule)-1)]#random.choice(newschedule)
+                tmp_listelem2 = newschedule[random.randint(0,len(newschedule)-1)]
                 elem1 = tmp_listelem1[0:int(len(tmp_listelem1) / 2)]
                 elem2 = tmp_listelem2[int(len(tmp_listelem2) / 2):len(tmp_listelem2)]
                 tmp_listelem = elem1 + elem2
@@ -46,9 +50,6 @@ class GeneticAlgorithm:
 
                 newschedule.append(tmp_listelem)
             population = newschedule
-            while len(population) < populationSize:
-                population.append(
-                    (ScheduleGenerator.generate_sample_schedule(start_date, end_date, metadata_body['employees'])[0]))
 
         execution_time_end = timer()
         execution_time_ms = round((execution_time_end - execution_time_start) * 1000, 2)
@@ -96,7 +97,7 @@ class GeneticAlgorithm:
         while start__date < end__date:
             day = start__date.weekday()
             if start__date in vac_schedule[schedule[counter] - 1]:  # program crashes with 2 employees if the
-                return 10000  # stopping constraint isn't adjusted
+                return 1000000  # stopping constraint isn't adjusted
             if day == 5 or day == 6:
                 weekends[schedule[counter] - 1] += 1
             else:
