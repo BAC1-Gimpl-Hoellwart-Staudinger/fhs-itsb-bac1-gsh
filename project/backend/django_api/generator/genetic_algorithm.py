@@ -36,8 +36,8 @@ class GeneticAlgorithm:
                 if s[0] < num_employees * 1000:
                     newschedule.append(s[1])
             for _ in range(int(populationSize * 0.5)):
-                tmp_listelem1 = random.choice(newschedule)
-                tmp_listelem2 = random.choice(newschedule)
+                tmp_listelem1 = newschedule[random.randint(0,len(newschedule)-1)]#random.choice(newschedule)
+                tmp_listelem2 = newschedule[random.randint(0,len(newschedule)-1)]#random.choice(newschedule)
                 elem1 = tmp_listelem1[0:int(len(tmp_listelem1) / 2)]
                 elem2 = tmp_listelem2[int(len(tmp_listelem2) / 2):len(tmp_listelem2)]
                 tmp_listelem = elem1 + elem2
