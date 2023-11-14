@@ -1,4 +1,5 @@
 from datetime import timedelta
+import time
 from .helper_functions import string_to_date, get_austrian_holidays_dates
 import numpy as np
 import random
@@ -8,10 +9,12 @@ from .schedule_generator import ScheduleGenerator
 class GeneticAlgorithm:
     @staticmethod
     def genetic_algorithm(start_date, end_date, metadata_body):
-        populationSize = 100
+        random.seed(time.time())
+        populationSize = 50
         execution_time_start = timer()
-        population = GeneticAlgorithm.generate_population(start_date, end_date, metadata_body, populationSize)
+        population = GeneticAlgorithm.generate_population(start_date, end_date, metadata_body, populationSize*2)
         num_employees = len(metadata_body['employees'])
+
         for gen in range(5000):
             rankedschedules = GeneticAlgorithm.eval_fitness(population, start_date, end_date, metadata_body)
             rankedschedules = rankedschedules[:populationSize]
@@ -29,10 +32,10 @@ class GeneticAlgorithm:
                 return rankedschedules[0][1], execution_time_ms
 
             for s in rankedschedules:
-                if s[0] < num_employees * 500:
+                if s[0] < num_employees * 1000:
                     newschedule.append(s[1])
             tmp_newsched = newschedule[:int(populationSize/2)]
-            for _ in range(int(populationSize*0.1)):
+            for _ in range(int(populationSize*0.5)):
                 tmp_listelem1 = random.choice(tmp_newsched)
                 tmp_listelem2 = random.choice(tmp_newsched)
                 elem1 = tmp_listelem1[0:int(len(tmp_listelem1) / 2)]
