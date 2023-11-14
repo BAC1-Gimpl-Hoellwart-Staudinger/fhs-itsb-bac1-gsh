@@ -1,10 +1,10 @@
 from django.http import JsonResponse
 from datetime import date, datetime
 import json
-
 from .employee_generator import EmployeeGenerator
 from .genetic_algorithm import GeneticAlgorithm
 from .genetic_algorithm2 import GeneticAlgorithm2
+from .genetic_algorithm import GeneticAlgorithm
 from .helper_functions import string_to_date, date_to_formatted_string
 
 
