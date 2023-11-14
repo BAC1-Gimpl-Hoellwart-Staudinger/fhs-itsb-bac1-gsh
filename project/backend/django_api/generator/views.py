@@ -3,6 +3,7 @@ from datetime import date, datetime
 import json
 
 from .employee_generator import EmployeeGenerator
+from .genetic_algorithm import GeneticAlgorithm
 from .genetic_algorithm2 import GeneticAlgorithm2
 from .helper_functions import string_to_date, date_to_formatted_string
 
@@ -68,7 +69,7 @@ def generate(request):
         end_date_body = metadata_body['end_date']
         created_at_date_body = metadata_body['created_at_date']
         employees_body = metadata_body['employees']
-        algo_version = metadata_body['algo_version']
+        algo_version = metadata_body['algo_version'] or None
 
         if (metadata_body is None or start_date_body is None or end_date_body is None
                 or created_at_date_body is None or employees_body is None):
