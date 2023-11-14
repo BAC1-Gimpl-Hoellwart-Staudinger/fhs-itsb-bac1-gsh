@@ -1,6 +1,3 @@
-from datetime import timedelta, date
-from .helper_functions import string_to_date, get_austrian_holidays_dates
-import numpy as np
 import random
 from timeit import default_timer as timer
 from .schedule_generator import ScheduleGenerator
