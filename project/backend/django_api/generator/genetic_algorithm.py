@@ -6,13 +6,14 @@ import random
 from timeit import default_timer as timer
 from .schedule_generator import ScheduleGenerator
 
+
 class GeneticAlgorithm:
     @staticmethod
     def genetic_algorithm(start_date, end_date, metadata_body):
         random.seed(time.time())
         populationSize = 50
         execution_time_start = timer()
-        population = GeneticAlgorithm.generate_population(start_date, end_date, metadata_body, populationSize*2)
+        population = GeneticAlgorithm.generate_population(start_date, end_date, metadata_body, populationSize * 2)
         num_employees = len(metadata_body['employees'])
 
         for gen in range(5000):
@@ -34,8 +35,8 @@ class GeneticAlgorithm:
             for s in rankedschedules:
                 if s[0] < num_employees * 1000:
                     newschedule.append(s[1])
-            tmp_newsched = newschedule[:int(populationSize/2)]
-            for _ in range(int(populationSize*0.5)):
+            tmp_newsched = newschedule
+            for _ in range(int(populationSize * 0.5)):
                 tmp_listelem1 = random.choice(tmp_newsched)
                 tmp_listelem2 = random.choice(tmp_newsched)
                 elem1 = tmp_listelem1[0:int(len(tmp_listelem1) / 2)]
@@ -96,7 +97,7 @@ class GeneticAlgorithm:
         while start__date < end__date:
             day = start__date.weekday()
             if start__date in vac_schedule[schedule[counter] - 1]:  # program crashes with 2 employees if the
-                return 10000                                       # stopping constraint isn't adjusted
+                return 10000  # stopping constraint isn't adjusted
             if day == 5 or day == 6:
                 weekends[schedule[counter] - 1] += 1
             else:
@@ -105,8 +106,8 @@ class GeneticAlgorithm:
                 holidays[schedule[counter] - 1] += 1
             counter += 1
             start__date += delta
-            if counter < len(schedule)-1:
-                if schedule[counter] == schedule[counter+1]:
+            if counter < len(schedule) - 1:
+                if schedule[counter] == schedule[counter + 1]:
                     successive += 1
 
         mean_weekdays = np.mean(weekdays)
@@ -119,4 +120,5 @@ class GeneticAlgorithm:
             deviation_weekdays += abs(mean_weekdays - s[0])
             deviation_weekends += abs(mean_weekends - s[1])
             deviation_holidays += abs(mean_holidays - s[2])
-        return round((deviation_weekdays * 10) + (deviation_weekends * 50) + (deviation_holidays * 100) + successive * 30, 2)
+        return round(
+            (deviation_weekdays * 10) + (deviation_weekends * 50) + (deviation_holidays * 100) + successive * 30, 2)
