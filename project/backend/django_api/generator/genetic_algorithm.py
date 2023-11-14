@@ -10,8 +10,10 @@ from .schedule_generator import ScheduleGenerator
 class GeneticAlgorithm:
     @staticmethod
     def genetic_algorithm(start_date, end_date, metadata_body):
+
         random.seed(time.time())
         populationSize = 50
+        bestsolution = [1000000, 0]
         execution_time_start = timer()
         population = GeneticAlgorithm.generate_population(start_date, end_date, metadata_body, populationSize * 2)
         num_employees = len(metadata_body['employees'])
@@ -21,15 +23,17 @@ class GeneticAlgorithm:
             rankedschedules = rankedschedules[:populationSize]
             newschedule = []
 
-            if gen % 10 == 0:
+            if gen % 500 == 0:
                 print(
-                    f'<=== Population Size: {len(rankedschedules)} Best Solution Gen ({gen}): {rankedschedules[0][0]} ==> ')
-
-            if rankedschedules[0][0] <= num_employees * 55:
+                    f'<=== Population Size: {len(rankedschedules)} Best Solution Gen ({gen}): {rankedschedules[0][0]} ==>')
+            if rankedschedules[0][0] < bestsolution[0]:
+                bestsolution[0] = rankedschedules[0][0]
+                bestsolution[1] = gen
+            if rankedschedules[0][0] <= num_employees * 55 or gen - bestsolution[1] > 800:
                 execution_time_end = timer()
                 execution_time_ms = round((execution_time_end - execution_time_start) * 1000, 2)
                 print(
-                    f'<=== Population Size: {len(rankedschedules)} Best Solution Gen ({gen}): {rankedschedules[0][0]} ==> ')
+                    f'<=== Population Size: {len(rankedschedules)} Best Solution Gen ({gen}): {rankedschedules[0][0]} ==>')
                 return rankedschedules[0][1], execution_time_ms
 
             for s in rankedschedules:
@@ -40,13 +44,17 @@ class GeneticAlgorithm:
                     (ScheduleGenerator.generate_sample_schedule(start_date, end_date, metadata_body['employees'])[0]))
 
             for _ in range(int(populationSize * 0.5)):
-                tmp_listelem1 = newschedule[random.randint(0,len(newschedule)-1)]#random.choice(newschedule)
-                tmp_listelem2 = newschedule[random.randint(0,len(newschedule)-1)]
-                elem1 = tmp_listelem1[0:int(len(tmp_listelem1) / 2)]
-                elem2 = tmp_listelem2[int(len(tmp_listelem2) / 2):len(tmp_listelem2)]
-                tmp_listelem = elem1 + elem2
-                if random.randint(1, 50) == 3:
-                    tmp_listelem[random.randint(0, len(tmp_listelem)) - 1] = random.randint(1, 4)
+                tmp_listelem1 = newschedule[random.randint(0, len(newschedule)-1)]
+                tmp_listelem2 = newschedule[random.randint(0, len(newschedule)-1)]
+                tmp_listelem3 = newschedule[random.randint(0, len(newschedule)-1)]
+                tmp_listelem4 = newschedule[random.randint(0, len(newschedule)-1)]
+                elem1 = tmp_listelem1[0:int(len(tmp_listelem1)/4)]
+                elem2 = tmp_listelem2[int(len(tmp_listelem2)/4):int(len(tmp_listelem2)/2)]
+                elem3 = tmp_listelem3[int(len(tmp_listelem3)/2):int(len(tmp_listelem3)/2)+int(len(tmp_listelem3)/4)]
+                elem4 = tmp_listelem4[int(len(tmp_listelem4)/2)+int(len(tmp_listelem4)/4):len(tmp_listelem4)]
+                tmp_listelem = elem1 + elem2 + elem3 + elem4
+                if random.random() <= 0.1:
+                    tmp_listelem[random.randint(0, len(tmp_listelem)) - 1] = random.randint(1, num_employees)
 
                 newschedule.append(tmp_listelem)
             population = newschedule
@@ -96,8 +104,9 @@ class GeneticAlgorithm:
 
         while start__date < end__date:
             day = start__date.weekday()
-            if start__date in vac_schedule[schedule[counter] - 1]:  # program crashes with 2 employees if the
-                return 1000000  # stopping constraint isn't adjusted
+
+            if start__date in vac_schedule[schedule[counter] - 1]:
+                return 1000000
             if day == 5 or day == 6:
                 weekends[schedule[counter] - 1] += 1
             else:
