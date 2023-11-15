@@ -39,6 +39,13 @@ def generate(request):
                 'error': 'startDate must be before endDate'
             }, status=400)
 
+        min_period_months = 2
+
+        if (end_date.year - start_date.year) * 12 + (end_date.month - start_date.month) < min_period_months:
+            return JsonResponse({
+                'error': f'startDate and endDate must be at least {min_period_months} months apart'
+            }, status=400)
+
         min_employees = 2
         max_employees = 10
 
