@@ -35,6 +35,7 @@ function ActionButton(props) {
                     thickness={5}
                     sx={{
                         color: 'white',
+                        margin: '4px 0',
                     }}
                 />
             ) : (

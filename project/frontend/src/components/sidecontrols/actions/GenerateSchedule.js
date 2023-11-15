@@ -123,9 +123,7 @@ function GenerateSchedule() {
 
         const datasets = JSON.parse(localStorageDatasetItems);
         const menuItems = datasets.map((dataset, datasetIndex) => ({
-            label: `dataset-${dataset["metadata"]["created_at_date"]
-            .replaceAll(" ", "-")
-            .replaceAll(":", "")}`,
+            label: `dataset-${dataset["metadata"]["created_at_date"].replaceAll(" ", "-").replaceAll(":", "")}`,
             value: datasetIndex,
         }));
         setMenuItemsDataset(menuItems);
