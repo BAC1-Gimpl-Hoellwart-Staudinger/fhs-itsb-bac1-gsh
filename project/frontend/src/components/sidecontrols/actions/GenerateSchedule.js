@@ -21,20 +21,34 @@ function GenerateSchedule() {
     const { isLoading, execute: getScheduleExecute } = useAsyncFn(getSchedule);
     const { isLoadingStats, execute: getStatsExecute } = useAsyncFn(getStats);
     const { showModal, setShowModal, Modal } = useModal();
-    const [menuItems, setMenuItems] = useState([]);
-    const [dropDownValue, setDropDownValue] = useState(
-        menuItems.length > 0 ? menuItems[menuItems.length - 1].value : ""
+    const [menuItemsDataset, setMenuItemsDataset] = useState([]);
+    const [dropDownDatasetValue, setDropDownDatasetValue] = useState(
+        menuItemsDataset.length > 0 ? menuItemsDataset[menuItemsDataset.length - 1].value : ""
     );
     const [selectedDataset, setSelectedDataset] = useState(null);
+    const [dropDownAlgorithmVersionValue, setDropDownAlgorithmVersionValue] = useState(1);
+    
+    const menuItemsAlgorithmVersion = [
+        {
+            label: "Version 1",
+            value: 1,
+        },
+        {
+            label: "Version 2",
+            value: 2,
+        },
+    ];
 
     function getSelectedDataset() {
         const localStorageDatasetItems = window.localStorage.getItem(LOCAL_STORAGE_DATASETS_KEY);
         const datasets = JSON.parse(localStorageDatasetItems);
-        return datasets[dropDownValue];
+        const dataset = datasets[dropDownDatasetValue];
+        dataset.metadata.algorithm_version = dropDownAlgorithmVersionValue;
+        return dataset;
     }
 
     function handleClickViewDataset() {
-        if (dropDownValue === "" || datasetSize === 0) return;
+        if (dropDownDatasetValue === "" || datasetSize === 0) return;
         setSelectedDataset(getSelectedDataset());
         setShowModal(true);
     }
@@ -42,7 +56,7 @@ function GenerateSchedule() {
     function handleSubmit(event) {
         event.preventDefault();
 
-        if (dropDownValue === "" || datasetSize === 0) return;
+        if (dropDownDatasetValue === "" || datasetSize === 0) return;
 
         getScheduleExecute(getSelectedDataset())
             .then((schedule) => {
@@ -72,8 +86,8 @@ function GenerateSchedule() {
             .replaceAll(":", "")}`,
             value: datasetIndex,
         }));
-        setMenuItems(menuItems);
-        setDropDownValue(menuItems[menuItems.length - 1].value);
+        setMenuItemsDataset(menuItems);
+        setDropDownDatasetValue(menuItems[menuItems.length - 1].value);
     }, [LOCAL_STORAGE_DATASETS_KEY, datasetSize]);
 
     return (
@@ -98,9 +112,16 @@ function GenerateSchedule() {
 
             <DropDownMUI
                 label="Select Dataset"
-                value={dropDownValue}
-                setValue={setDropDownValue}
-                menuItems={menuItems}
+                value={dropDownDatasetValue}
+                setValue={setDropDownDatasetValue}
+                menuItems={menuItemsDataset}
+            />
+
+            <DropDownMUI
+                label="Select Algorithm Version"
+                value={dropDownAlgorithmVersionValue}
+                setValue={setDropDownAlgorithmVersionValue}
+                menuItems={menuItemsAlgorithmVersion}
             />
 
             <ActionButton

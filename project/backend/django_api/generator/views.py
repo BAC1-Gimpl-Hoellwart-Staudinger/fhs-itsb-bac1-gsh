@@ -64,18 +64,17 @@ def generate(request):
 
     elif request.method == 'POST':
         json_data = json.loads(request.body.decode('utf-8'))
-        metadata_body = json_data['metadata']
-        start_date_body = metadata_body['start_date']
-        end_date_body = metadata_body['end_date']
-        created_at_date_body = metadata_body['created_at_date']
-        employees_body = metadata_body['employees']
-        #algo_version = metadata_body['algo_version'] or None
-        algo_version = 1
+        metadata_body = json_data.get('metadata', None)
+        start_date_body = metadata_body.get('start_date', None)
+        end_date_body = metadata_body.get('end_date', None)
+        created_at_date_body = metadata_body.get('created_at_date', None)
+        employees_body = metadata_body.get('employees', None)
+        algorithm_version = metadata_body.get('algorithm_version', None)
 
         if (metadata_body is None or start_date_body is None or end_date_body is None
-                or created_at_date_body is None or employees_body is None):
+                or created_at_date_body is None or employees_body is None or algorithm_version is None):
             return JsonResponse({
-                'error': 'metadata, start_date, end_date, created_at_date, and employees are required body parameters'
+                'error': 'metadata, start_date, end_date, created_at_date, employees, algo_version are required body parameters'
             }, status=400)
 
         created_at_date_format = EmployeeGenerator.get_created_at_date_format()
@@ -116,15 +115,15 @@ def generate(request):
         }
 
         try:
-            algo_version=int(algo_version)
+            algorithm_version = int(algorithm_version)
         except ValueError:
             return JsonResponse({
                     'error': 'algo_version must be an integer'
                 }, status=400)
 
-        if algo_version is None or algo_version == 1:
+        if algorithm_version == 1:
             schedule, execution_time_ms = GeneticAlgorithm.genetic_algorithm(start_date, end_date, metadata_body)
-        elif algo_version == 2:
+        elif algorithm_version == 2:
             schedule, execution_time_ms = GeneticAlgorithm2.genetic_algorithm(start_date, end_date, metadata_body)
         else:
             return JsonResponse({
