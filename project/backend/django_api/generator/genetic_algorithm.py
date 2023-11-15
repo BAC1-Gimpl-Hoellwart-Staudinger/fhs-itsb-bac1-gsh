@@ -11,10 +11,11 @@ class GeneticAlgorithm:
     @staticmethod
     def genetic_algorithm(start_date, end_date, metadata_body):
 
-        random.seed(time.time())
+        execution_time_start = timer()
+        rankedschedules = []
         populationSize = 50
         bestsolution = [1000000, 0]
-        execution_time_start = timer()
+        random.seed(time.time())
         population = GeneticAlgorithm.generate_population(start_date, end_date, metadata_body, populationSize * 2)
         num_employees = len(metadata_body['employees'])
 
@@ -24,38 +25,30 @@ class GeneticAlgorithm:
             newschedule = []
 
             if gen % 500 == 0:
-                print(
-                    f'<=== Population Size: {len(rankedschedules)} Best Solution Gen ({gen}): {rankedschedules[0][0]} ==>')
+                print(f'Population Size: {len(rankedschedules)} Best Solution Gen ({gen}): {rankedschedules[0][0]}')
+
             if rankedschedules[0][0] < bestsolution[0]:
                 bestsolution[0] = rankedschedules[0][0]
                 bestsolution[1] = gen
+
             if rankedschedules[0][0] <= num_employees * 55 or gen - bestsolution[1] > 800:
                 execution_time_end = timer()
                 execution_time_ms = round((execution_time_end - execution_time_start) * 1000, 2)
-                print(
-                    f'<=== Population Size: {len(rankedschedules)} Best Solution Gen ({gen}): {rankedschedules[0][0]} ==>')
+                print(f'Population Size: {len(rankedschedules)} Best Solution Gen ({gen}): {rankedschedules[0][0]}')
                 return rankedschedules[0][1], execution_time_ms
 
             for s in rankedschedules:
                 if s[0] < 1000000:
                     newschedule.append(s[1])
+
             while len(newschedule) < populationSize:
                 newschedule.append(
                     (ScheduleGenerator.generate_sample_schedule(start_date, end_date, metadata_body['employees'])[0]))
 
             for _ in range(int(populationSize * 0.5)):
-                tmp_listelem1 = newschedule[random.randint(0, len(newschedule)-1)]
-                tmp_listelem2 = newschedule[random.randint(0, len(newschedule)-1)]
-                tmp_listelem3 = newschedule[random.randint(0, len(newschedule)-1)]
-                tmp_listelem4 = newschedule[random.randint(0, len(newschedule)-1)]
-                elem1 = tmp_listelem1[0:int(len(tmp_listelem1)/4)]
-                elem2 = tmp_listelem2[int(len(tmp_listelem2)/4):int(len(tmp_listelem2)/2)]
-                elem3 = tmp_listelem3[int(len(tmp_listelem3)/2):int(len(tmp_listelem3)/2)+int(len(tmp_listelem3)/4)]
-                elem4 = tmp_listelem4[int(len(tmp_listelem4)/2)+int(len(tmp_listelem4)/4):len(tmp_listelem4)]
-                tmp_listelem = elem1 + elem2 + elem3 + elem4
+                tmp_listelem = GeneticAlgorithm.crossover(newschedule, 4)
                 if random.random() <= 0.1:
                     tmp_listelem[random.randint(0, len(tmp_listelem)) - 1] = random.randint(1, num_employees)
-
                 newschedule.append(tmp_listelem)
             population = newschedule
 
@@ -78,6 +71,26 @@ class GeneticAlgorithm:
             rankedschedules.append((GeneticAlgorithm.fitness(s, start_date, end_date, metadata_body), s))
         rankedschedules.sort()
         return rankedschedules
+
+    @staticmethod
+    def crossover(schedule, num_parents):
+        len_sched = len(schedule[0])
+        divisor = True
+        if len_sched % num_parents != 0:
+            divisor = False
+        new_elem = []
+        size_of_elem = int(len_sched / num_parents)
+        parents = random.sample(schedule, num_parents)
+
+        for i in range(num_parents):
+            tmp_elem = parents[i]
+            if not divisor and i == num_parents - 1:
+                index = size_of_elem * i
+                new_elem += tmp_elem[index:index + (len_sched - len(new_elem))]
+                break
+            index = size_of_elem * i
+            new_elem += tmp_elem[index:index + size_of_elem]
+        return new_elem
 
     @staticmethod
     def fitness(schedule, start_date, end_date, data):
