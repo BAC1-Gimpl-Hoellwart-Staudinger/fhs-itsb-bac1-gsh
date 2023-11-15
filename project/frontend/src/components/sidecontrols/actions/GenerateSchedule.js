@@ -15,7 +15,8 @@ function GenerateSchedule() {
     const {
         LOCAL_STORAGE_DATASETS_KEY,
         datasetSize,
-        setStats
+        setStats,
+        convertExecTimeToSeconds,
     } = useContext(SideControlsContext);
     const { setAppointments } = useContext(CalendarContext);
     const { isLoading, execute: getScheduleExecute } = useAsyncFn(getSchedule);
@@ -60,26 +61,59 @@ function GenerateSchedule() {
 
         const dataset = getSelectedDataset();
 
-        getScheduleExecute(dataset)
-            .then((schedule) => {
-                const appointments = Appointment.APIDatasetToAppointments(schedule);
-                setAppointments(appointments);
+        toast.promise(
+            getScheduleExecute(dataset),
+            {
+                loading: `Applying algorithm v${dataset.metadata.algorithm_version} to dataset...`,
+                success: (schedule) => {
+                    const appointments = Appointment.APIDatasetToAppointments(schedule);
+                    setAppointments(appointments);
+    
+                    const statsRequestBody = {
+                        ...dataset,
+                    };
+                    statsRequestBody.metadata.algorithm_execution_time_ms = schedule.metadata.algorithm_execution_time_ms;
+                    statsRequestBody.schedule = schedule.schedule;
+    
+                    toast.promise(
+                        getStatsExecute(statsRequestBody),
+                        {
+                            loading: 'Calculating stats...',
+                            success: (stats) => {
+                                setStats(stats);
+                                return 'Successfully calculated stats';
+                            },
+                            error: (err) => toast.error(err),
+                        },
+                        {
+                            success: {
+                                duration: 10_000,
+                            },
+                        }
+                    );
 
-                toast.success("Successfully displayed schedule", { duration: 3000 });
+                    const execTimeSeconds = convertExecTimeToSeconds(schedule.metadata.algorithm_execution_time_ms);
+                    const timeHTML = `<span><span class="font-serif italic">t<sub>exec</sub></span> = ${execTimeSeconds}</span>`;
 
-                const statsRequestBody = {
-                    ...dataset,
-                };
-                statsRequestBody.metadata.algorithm_execution_time_ms = schedule.metadata.algorithm_execution_time_ms;
-                statsRequestBody.schedule = schedule.schedule;
-
-                getStatsExecute(statsRequestBody)
-                    .then((stats) => {
-                        setStats(stats);
-                        toast.success("Successfully calculated stats", { duration: 3000 });
-                    })
-                    .catch((err) => toast.error(err));
-            }).catch((err) => toast.error(err));
+                    return (
+                        <span
+                            dangerouslySetInnerHTML={{
+                                __html: `Successfully displaying schedule (${timeHTML} s)`
+                            }}
+                        />
+                    );
+                },
+                error: (err) => err,
+            },
+            {
+                success: {
+                    duration: 10_000,
+                    style: {
+                        minWidth: '420px',
+                    },
+                },
+            }
+        );
     }
 
     useEffect(() => {

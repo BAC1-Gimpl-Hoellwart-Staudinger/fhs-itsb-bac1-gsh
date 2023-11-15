@@ -39,27 +39,37 @@ function GenerateDataset() {
             return;
         }
 
-        getDatasetExecute(
-            Date.formatAPIDate(selectedDatePickerDateStart),
-            Date.formatAPIDate(selectedDatePickerDateEnd),
-            numberOfEmployees
-        )
-            .then((dataset) => {
-                const existingDatasets = JSON.parse(window.localStorage.getItem(LOCAL_STORAGE_DATASETS_KEY)) || [];
-
-                if(existingDatasets.length > 5) {
-                    existingDatasets.splice(0, existingDatasets.length);
-                    setDatasetSize(0);
-                    toast.error('Clearing datasets due to limit of 5', { duration: 3000, icon: '🗑️' });
-                }
-
-                const mergedDatasets = [...existingDatasets, dataset];
-                window.localStorage.setItem(LOCAL_STORAGE_DATASETS_KEY, JSON.stringify(mergedDatasets));
-                setDatasetSize(mergedDatasets.length);
-
-                toast.success('Successfully fetched dataset', { duration: 3000 });
-            })
-            .catch((err) => toast.error(err));
+        toast.promise(
+            getDatasetExecute(
+                Date.formatAPIDate(selectedDatePickerDateStart),
+                Date.formatAPIDate(selectedDatePickerDateEnd),
+                numberOfEmployees
+            ),
+            {
+                loading: 'Generating dataset...',
+                success: (dataset) => {
+                    const existingDatasets = JSON.parse(window.localStorage.getItem(LOCAL_STORAGE_DATASETS_KEY)) || [];
+    
+                    if(existingDatasets.length > 5) {
+                        existingDatasets.splice(0, existingDatasets.length);
+                        setDatasetSize(0);
+                        toast.error('Clearing datasets due to limit of 5', { duration: 3000, icon: '🗑️' });
+                    }
+    
+                    const mergedDatasets = [...existingDatasets, dataset];
+                    window.localStorage.setItem(LOCAL_STORAGE_DATASETS_KEY, JSON.stringify(mergedDatasets));
+                    setDatasetSize(mergedDatasets.length);
+    
+                    return 'Successfully fetched dataset';
+                },
+                error: (err) => err,
+            },
+            {
+                success: {
+                    duration: 10_000,
+                },
+            }
+        );
     }
 
     return (
