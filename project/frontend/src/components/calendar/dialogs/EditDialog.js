@@ -5,6 +5,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import AppointmentDialogContainer from './AppointmentDialogContainer';
 import AppointmentColors from './AppointmentColors';
+import Appointment from '../../../utils/Appointment';
 
 function EditDialog() {
     const {
@@ -41,11 +42,12 @@ function EditDialog() {
             return;
         }
 
-        const updatedAppointment = {
-            ...editAppointment,
-            title: appointmentTitle,
-            color: selectedColor,
-        };
+        const updatedAppointment = Appointment.createAppointment(
+            appointmentTitle,
+            editAppointment.dateFrom,
+            editAppointment.dateTo,
+            selectedColor
+        );
 
         setAppointments((prevAppointments) => {
             const index = prevAppointments.findIndex((appointment) => appointment.id === editAppointment.id);

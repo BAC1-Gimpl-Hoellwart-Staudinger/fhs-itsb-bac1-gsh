@@ -19,6 +19,7 @@ function GenerateDataset() {
 
     const minValueEmployees = 2;
     const maxValueEmployees = 10;
+    const minMonths = 2;
 
     function handleSubmit(event) {
         event.preventDefault();
@@ -30,6 +31,11 @@ function GenerateDataset() {
 
         if(selectedDatePickerDateStart.isAfter(selectedDatePickerDateEnd)) {
             toast.error('Start date must be before end date');
+            return;
+        }
+
+        if(selectedDatePickerDateEnd.diff(selectedDatePickerDateStart, 'month') < minMonths) {
+            toast.error(`Time difference between start and end date must be at least ${minMonths} months`);
             return;
         }
 
@@ -60,19 +66,17 @@ function GenerateDataset() {
         <ActionFormContainer
             onSubmit={handleSubmit}
         >
-            <div className="flex flex-row justify-between md:gap-10 gap-5">
+            <div className="flex flex-row justify-between md:gap-6 gap-4">
                 <DatePickerMUI
                     label="Start Date"
                     selectedDatePickerDate={selectedDatePickerDateStart}
                     setSelectedDatePickerDate={setSelectedDatePickerDateStart}
-                    textFieldSize="small"
                 />
 
                 <DatePickerMUI
                     label="End Date"
                     selectedDatePickerDate={selectedDatePickerDateEnd}
                     setSelectedDatePickerDate={setSelectedDatePickerDateEnd}
-                    textFieldSize="small"
                 />
             </div>
 
@@ -82,7 +86,6 @@ function GenerateDataset() {
                 setValue={setNumberOfEmployees}
                 minValue={minValueEmployees}
                 maxValue={maxValueEmployees}
-                size="small"
             />
 
             <ActionButton

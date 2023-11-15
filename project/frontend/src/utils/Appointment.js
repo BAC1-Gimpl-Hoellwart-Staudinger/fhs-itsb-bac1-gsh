@@ -6,14 +6,20 @@ class Appointment {
     static borderColors = ['border-blue-600', 'border-green-600', 'border-yellow-600', 'border-red-600', 'border-indigo-600', 'border-purple-600', 'border-pink-600'];
 
     static createAppointment(title, dateFrom, dateTo, color) {
-        return {
+        const baseAppointment = {
             id: uuidv4(),
             title: title,
             dateFrom: dateFrom,
             dateTo: dateTo,
-            color: color,
-            borderColor: this.borderColors[this.colors.indexOf(color)],
         };
+        
+        if(this.isAllDay(baseAppointment)) {
+            baseAppointment.color = color;
+        } else {
+            baseAppointment.borderColor = this.borderColors[this.colors.indexOf(color)];
+        }
+
+        return baseAppointment;
     }
 
     static generateAppointment() {

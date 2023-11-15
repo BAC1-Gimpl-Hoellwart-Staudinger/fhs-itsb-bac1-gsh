@@ -11,7 +11,7 @@ function sendApiRequest(url, options = {}) {
 
     return api(url, options)
         .then((response) => response.data)
-        .catch((error) => Promise.reject(error?.response?.data?.message || error?.message));
+        .catch((error) => Promise.reject('Error: ' + error?.response?.data?.error || error?.message));
 }
 
 function getDataset(startDate, endDate, numberOfEmployees) {
