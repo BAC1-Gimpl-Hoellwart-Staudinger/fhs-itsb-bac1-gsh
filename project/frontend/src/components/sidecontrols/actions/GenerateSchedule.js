@@ -58,14 +58,22 @@ function GenerateSchedule() {
 
         if (dropDownDatasetValue === "" || datasetSize === 0) return;
 
-        getScheduleExecute(getSelectedDataset())
+        const dataset = getSelectedDataset();
+
+        getScheduleExecute(dataset)
             .then((schedule) => {
                 const appointments = Appointment.APIDatasetToAppointments(schedule);
                 setAppointments(appointments);
 
                 toast.success("Successfully displayed schedule", { duration: 3000 });
 
-                getStatsExecute(schedule)
+                const statsRequestBody = {
+                    ...dataset,
+                };
+                statsRequestBody.metadata.algorithm_execution_time_ms = schedule.metadata.algorithm_execution_time_ms;
+                statsRequestBody.schedule = schedule.schedule;
+
+                getStatsExecute(statsRequestBody)
                     .then((stats) => {
                         setStats(stats);
                         toast.success("Successfully calculated stats", { duration: 3000 });

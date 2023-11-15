@@ -13,19 +13,20 @@ def stats(request):
         }, status=405)
 
     json_data = json.loads(request.body.decode('utf-8'))
-    metadata_body = json_data['metadata']
-    start_date_body = metadata_body['start_date']
-    end_date_body = metadata_body['end_date']
-    created_at_date_body = metadata_body['created_at_date']
-    employees_body = metadata_body['employees']
+    metadata_body = json_data.get('metadata', None)
+    start_date_body = metadata_body.get('start_date', None)
+    end_date_body = metadata_body.get('end_date', None)
+    created_at_date_body = metadata_body.get('created_at_date', None)
+    algorithm_version_body = metadata_body.get('algorithm_version', None)
+    employees_body = metadata_body.get('employees', None)
+    execution_time_ms = metadata_body.get('algorithm_execution_time_ms', None)
 
-    schedule = json_data['schedule']
-    execution_time_ms = metadata_body['algorithm_execution_time_ms']
+    schedule = json_data.get('schedule', None)
 
     if (metadata_body is None or start_date_body is None or end_date_body is None or schedule is None
-            or created_at_date_body is None or employees_body is None):
+            or created_at_date_body is None or employees_body is None or execution_time_ms is None or algorithm_version_body is None):
         return JsonResponse({
-            'error': 'metadata, start_date, end_date, created_at_date, employees and schedule are required body parameters'
+            'error': 'metadata, start_date, end_date, created_at_date, employees, schedule, algorithm_version and schedule are required body parameters'
         }, status=400)
 
     created_at_date_format = Stats.get_created_at_date_format()
@@ -36,7 +37,7 @@ def stats(request):
         created_at_date = datetime.strptime(created_at_date_body, created_at_date_format)
     except ValueError:
         return JsonResponse({
-            'error': f'start_date {start_date}, end_date must be in YYYY-MM-DD and'
+            'error': f'start_date, end_date must be in YYYY-MM-DD and'
                      f'create_at_date must be in {created_at_date_format} format'
         }, status=400)
 
@@ -57,7 +58,7 @@ def stats(request):
             return JsonResponse({
                 'error': 'employee id must be an integer'
             }, status=400)
-        
+
 
     metadata = {
         "start_date": start_date,
@@ -65,8 +66,6 @@ def stats(request):
         "created_at_date": created_at_date,
         "employees": employees_body
     }
-    if execution_time_ms is not None:
-        metadata['algorithm_execution_time_ms'] = execution_time_ms
 
     try:
         stats = Stats.calculate(metadata, schedule)
@@ -76,8 +75,7 @@ def stats(request):
         }, status=400)
 
     dataset = {
-        "metadata": metadata,
-        #"schedule": schedule,
+        "metadata": metadata_body,
         "stats": stats
     }
 

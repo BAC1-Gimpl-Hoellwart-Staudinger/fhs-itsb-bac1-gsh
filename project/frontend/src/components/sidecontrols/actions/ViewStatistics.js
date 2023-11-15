@@ -36,7 +36,7 @@ function getColorForIndexHoliday(index) {
 
 function ViewStatistics() {
   const { showModal, setShowModal, Modal } = useModal();
-  const { stats } = useContext(SideControlsContext);
+  const { stats, convertExecTimeToSeconds } = useContext(SideControlsContext);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -58,26 +58,29 @@ function ViewStatistics() {
       const employeeCount = stats.stats.total_employees;
       const employees = stats.metadata.employees;
       const perEmployeeStats = stats.stats.per_employee;
-      let execTime = stats.metadata.algorithm_execution_time_ms /10;
-      execTime = Math.round(execTime) / 100;
+      const algorithmVersion = stats.metadata.algorithm_version;
+      const execTime = convertExecTimeToSeconds(stats.metadata.algorithm_execution_time_ms);
 
       return (
         <div className="flex flex-col gap-4">
-          <div className="flex flex-row items-center justify-center gap-2">
+          <div className="flex flex-row items-center justify-center gap-2 my-1">
             <IoMdInformationCircleOutline size={18} />
             <p className="text-gray-700 text-center">
-              The statistics are based on the currently displaying calendar
-              schedule
+              The statistics are based on the currently displaying schedule in the calendar
             </p>
           </div>
           <div className="overflow-x-auto">
             <p className="text-lg">
-              Schedule length:{" "}
+              The schedule consists of{" "}
               <span className="font-semibold">{scheduleLength}</span> days
+              and was generated with algorithm version{" "}
+              <span className="font-semibold">
+                {algorithmVersion}
+              </span>
             </p>
             <p className="text-lg">
-              Schedule calculated for{" "}
-              <span className="font-semibold">{employeeCount}</span> employees in <span className="font-semibold">{execTime}</span>s:
+              Additionally,{" "}
+              <span className="font-semibold">{employeeCount}</span> employees were considered within a runtime of <span className="font-semibold">{execTime}</span> s:
             </p>
 
             <table className="border-collapse border table-auto mt-4 w-full">

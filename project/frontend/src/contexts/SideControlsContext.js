@@ -7,6 +7,11 @@ function SideControlsProvider({ children }) {
     const [datasetSize, setDatasetSize] = useState(window.localStorage.getItem(LOCAL_STORAGE_DATASETS_KEY) || 0);
     const [stats, setStats] = useState(null);
 
+    function convertExecTimeToSeconds(execTimeMs) {
+        let tmp = execTimeMs / 10;
+        return Math.round(tmp) / 100;
+    }
+
     return (
         <SideControlsContext.Provider value={{
             LOCAL_STORAGE_DATASETS_KEY,
@@ -14,6 +19,7 @@ function SideControlsProvider({ children }) {
             setDatasetSize,
             stats,
             setStats,
+            convertExecTimeToSeconds,
         }}>
             {children}
         </SideControlsContext.Provider>

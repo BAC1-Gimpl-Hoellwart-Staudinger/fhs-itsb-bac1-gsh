@@ -21,7 +21,7 @@ function Modal({ label, showModal, setShowModal, children }) {
                 className="fixed inset-0 bg-black/20"
                 onClick={() => setShowModal(false)}
             />
-            <div className="relative w-[60vw] bg-white p-8 rounded-md">
+            <div className="relative w-[80vw] bg-white p-8 rounded-md">
                 <div className="flex flex-row justify-between items-center mb-4">
                     <h2 className="font-bold text-xl">{label}</h2>
                     <div
