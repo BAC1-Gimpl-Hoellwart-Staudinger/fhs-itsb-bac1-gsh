@@ -4,7 +4,7 @@ import { CalendarContext } from '../../contexts/CalendarContext';
 function ViewScaleButtons() {
     const { setViewScale, VIEW_SCALES } = useContext(CalendarContext);
 
-    const commonStyle = 'border border-slate-900 p-2 flex-grow font-semibold';
+    const commonStyle = 'border border-slate-900 p-2 flex-grow font-semibold hover:bg-slate-900 hover:text-white transition-all duration-200 ease-in-out';
 
     return (
         <div className="flex">

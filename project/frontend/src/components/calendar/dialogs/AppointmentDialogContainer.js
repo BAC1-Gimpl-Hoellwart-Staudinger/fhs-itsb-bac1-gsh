@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useRef, useEffect } from 'react';
 import { CalendarContext } from '../../../contexts/CalendarContext';
 import { MdEdit, MdDeleteForever } from 'react-icons/md';
 import { GrFormClose } from 'react-icons/gr';
@@ -10,7 +10,8 @@ function AppointmentDialogContainer(props) {
         dialogPosition,
         setDialogPosition,
         setShowEditDialog,
-        DIALOG_WIDTH
+        DIALOG_WIDTH,
+        setDialogHeight,
     } = useContext(CalendarContext);
     const {
         children,
@@ -19,7 +20,14 @@ function AppointmentDialogContainer(props) {
         dialogType,
         setShowDialog
     } = props;
-    const iconButtonClasses = 'p-1 rounded-full hover:bg-gray-200';
+    const dialogRef = useRef(null);
+    const iconButtonClasses = 'p-1 rounded-full hover:bg-gray-200 transition-colors duration-200 ease-in-out';
+
+    useEffect(() => {
+        if (dialogRef.current) {
+            setDialogHeight(dialogRef.current.clientHeight);
+        }
+    }, [children, setDialogHeight]);
 
     function handleBackdropClick(event) {
         // close the dialog only if the user clicks on the backdrop
@@ -49,6 +57,7 @@ function AppointmentDialogContainer(props) {
             <div
                 className="fixed bg-white border border-gray-300 p-4 rounded-md shadow-md z-50"
                 style={{ left: `${dialogPosition.x}px`, top: `${dialogPosition.y}px`, width: `${DIALOG_WIDTH}px` }}
+                ref={dialogRef}
             >
                 <div className="flex flex-row justify-between items-center">
                     <p>

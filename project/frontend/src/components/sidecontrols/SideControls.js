@@ -11,14 +11,16 @@ function SideControls() {
 
     return (
         <div className="h-auto md:h-full w-full bg-gray-50 py-5 px-8 flex flex-col gap-2">
-            <DateControls />
+            <div>
+                <DateControls />
 
-        	<ViewScaleButtons />
+                <ViewScaleButtons />
 
-            <ContentButton
-                isContentOpen={isContentOpen}
-                handleClick={() => setIsContentOpen((prevState) => !prevState)}
-            />
+                <ContentButton
+                    isContentOpen={isContentOpen}
+                    handleClick={() => setIsContentOpen((prevState) => !prevState)}
+                />
+            </div>
             
             {isContentOpen && (
                 <div className="md:h-full md:w-full flex flex-col md:justify-between py-3 gap-5 md:gap-0">
