@@ -1,42 +1,45 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { SideControlsContext } from "../../../contexts/SideControlsContext";
 import { PiWarningDuotone } from "react-icons/pi";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import ActionFormContainer from "./ActionFormContainer";
 import ActionButton from "./ActionButton";
+import NumberPickerMUI from "../../inputs/NumberPickerMUI";
 import useModal from "../../../hooks/useModal";
 import Plot from "react-plotly.js";
-
-function getColorForIndex(index) {
-  const colors = [
-    "rgb(37, 99, 235)",
-    "rgb(22, 163, 74)",
-    "rgb(202, 138, 4)",
-    "rgb(220, 38, 38)",
-    "rgb(79, 70, 229)",
-    "rgb(147, 51, 234)",
-    "rgb(219, 39, 119)",
-  ];
-  return colors[index % colors.length];
-
-}
-
-function getColorForIndexHoliday(index) {
-  const colors = [
-    "rgb(97, 120, 235)",
-    "rgb(82, 200, 74)",
-    "rgb(232, 198, 40)",
-    "rgb(220, 88, 88)",
-    "rgb(79, 70, 160)",
-    "rgb(200, 51, 234)",
-    "rgb(219, 89, 119)",
-  ];
-  return colors[index % colors.length];
-}
 
 function ViewStatistics() {
   const { showModal, setShowModal, Modal } = useModal();
   const { stats, convertExecTimeToSeconds } = useContext(SideControlsContext);
+  const [acf_x_range, set_acf_x_range] = useState(10);
+  const min_acf_x_val = 2;
+  const max_acf_x_val = 50;
+
+  function getColorForIndex(index) {
+    const colors = [
+      "rgb(37, 99, 235)",
+      "rgb(22, 163, 74)",
+      "rgb(202, 138, 4)",
+      "rgb(220, 38, 38)",
+      "rgb(79, 70, 229)",
+      "rgb(147, 51, 234)",
+      "rgb(219, 39, 119)",
+    ];
+    return colors[index % colors.length];
+  }
+
+  function getColorForIndexHoliday(index) {
+    const colors = [
+      "rgb(97, 120, 235)",
+      "rgb(82, 200, 74)",
+      "rgb(232, 198, 40)",
+      "rgb(220, 88, 88)",
+      "rgb(79, 70, 160)",
+      "rgb(200, 51, 234)",
+      "rgb(219, 89, 119)",
+    ];
+    return colors[index % colors.length];
+  }
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -59,28 +62,31 @@ function ViewStatistics() {
       const employees = stats.metadata.employees;
       const perEmployeeStats = stats.stats.per_employee;
       const algorithmVersion = stats.metadata.algorithm_version;
-      const execTime = convertExecTimeToSeconds(stats.metadata.algorithm_execution_time_ms);
+      const execTime = convertExecTimeToSeconds(
+        stats.metadata.algorithm_execution_time_ms
+      );
 
       return (
         <div className="flex flex-col gap-4">
           <div className="flex flex-row items-center justify-center gap-2 my-1">
             <IoMdInformationCircleOutline size={18} />
             <p className="text-gray-700 text-center">
-              The statistics are based on the currently displaying schedule in the calendar
+              The statistics are based on the currently displaying schedule in
+              the calendar
             </p>
           </div>
           <div className="overflow-x-auto">
             <p className="text-lg">
               The schedule consists of{" "}
-              <span className="font-semibold">{scheduleLength}</span> days
-              and was generated with algorithm version{" "}
-              <span className="font-semibold">
-                {algorithmVersion}
-              </span>
+              <span className="font-semibold">{scheduleLength}</span> days and
+              was generated with algorithm version{" "}
+              <span className="font-semibold">{algorithmVersion}</span>
             </p>
             <p className="text-lg">
               Additionally,{" "}
-              <span className="font-semibold">{employeeCount}</span> employees were considered within a runtime of <span className="font-semibold">{execTime}</span> s:
+              <span className="font-semibold">{employeeCount}</span> employees
+              were considered within a runtime of{" "}
+              <span className="font-semibold">{execTime}</span> s:
             </p>
 
             <table className="border-collapse border table-auto mt-4 w-full">
@@ -132,12 +138,13 @@ function ViewStatistics() {
 
     const empl = stats.stats.per_employee;
     const employees = stats.metadata.employees;
+
     var data = [];
     empl.forEach((e) => {
       const acf = e.acf;
       const half_acf = acf.slice(Math.floor(acf.length / 2));
       data.push({
-        y: half_acf.slice(0, 20),
+        y: half_acf.slice(0, +acf_x_range + 1), // +acf_x_range makes sure that the value is parsed as an int
         type: "bar",
         marker: {
           color: getColorForIndex(e.id - 1),
@@ -149,7 +156,20 @@ function ViewStatistics() {
     const layout = {
       width: "1000",
       barmode: "group",
-      title: "Autocorrelation Function",
+      title: "ACF for each employee's schedule",
+      font: {
+        family: "Inter, sans-serif",
+      },
+      xaxis: {
+        title: {
+          text: "Lag in days",
+        },
+      },
+      yaxis: {
+        title: {
+          text: "Autocorrelation",
+        },
+      },
     };
 
     return (
@@ -219,6 +239,19 @@ function ViewStatistics() {
       width: "1000",
       barmode: "group",
       title: "Weekdays worked per employees",
+      font: {
+        family: "Inter, sans-serif",
+      },
+      xaxis: {
+        title: {
+          text: "Weekday",
+        },
+      },
+      yaxis: {
+        title: {
+          text: "Count of days worked",
+        },
+      },
     };
 
     return (
@@ -237,6 +270,15 @@ function ViewStatistics() {
       >
         {displayStats()}
         {drawACFs()}
+        <div className="flex justify-center mb-10">
+          <NumberPickerMUI
+            label="Displayed lag"
+            value={acf_x_range}
+            setValue={set_acf_x_range}
+            minValue={min_acf_x_val}
+            maxValue={max_acf_x_val}
+          />
+        </div>
         {drawWeekdayStats()}
       </Modal>
 
