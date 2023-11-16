@@ -63,7 +63,7 @@ class GeneticAlgorithm2:
         for i in population:
             sum_fitness += i.fitness
         for i in population:
-            i.relative_fitness = i.fitness / sum_fitness
+            i.relative_fitness = 1-(i.fitness / sum_fitness)
         mating_pool = []
         while len(mating_pool) < len(population):
             mating_pool.append(GeneticAlgorithm2.select_individual(population))
