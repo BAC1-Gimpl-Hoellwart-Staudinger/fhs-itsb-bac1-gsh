@@ -9,29 +9,29 @@ This project implements a genetic algorithm to generate a schedule for a set amo
 - Two different algorithms for schedule creation
 - Stats
 
-## Run locally (dev)
+## Run locally (Windows, dev)
 
 Clone the project
 
-```bash
+```bat
   git clone https://github.com/BAC1-Gimpl-Hoellwart-Staudinger/fhs-itsb-bac1-gsh.git
 ```
 
 Go to the project directory
 
-```bash
+```bat
   cd fhs-itsb-bac1-gsh
 ```
 
 To install all poetry (python backend) and npm (frontend) packages run
 
-```bash
+```bat
   install-dev.bat
 ```
 
 To start the back- and frontend servers run
 
-```bash
+```bat
   start-dev.bat
 ```
 
