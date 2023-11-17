@@ -9,7 +9,7 @@ This project implements a genetic algorithm to generate a schedule for a set amo
 - Two different algorithms for schedule creation
 - Stats
 
-## Run locally (dev)
+## Run locally (Windows, dev)
 
 Clone the project
 
