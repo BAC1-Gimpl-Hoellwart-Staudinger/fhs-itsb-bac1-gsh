@@ -9,7 +9,7 @@ function DropDownMUI(props) {
 
     function handleChange(event) {
         setValue(event.target.value);
-    };
+    }
 
     return (
         <Box sx={{ minWidth: 120 }}>
