@@ -1,5 +1,7 @@
-# Backend > django_api
-This directory contains of a django project (with poetry) which includes the djangorestframework package to create REST API endpoints.
+# Backend
+This directory consists of a django project, where the dependency
+management is done via poetry. The REST API endpoints are served by
+the djangorestframework.
 
 ## Installation
 1. Install [poetry](https://python-poetry.org/docs/#installation)
