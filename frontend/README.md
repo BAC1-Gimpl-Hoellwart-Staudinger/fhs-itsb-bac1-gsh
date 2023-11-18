@@ -1,4 +1,4 @@
-## BAC1 frontend
+## Frontend
 
 This application was initially generated using `npx create-react-app` (https://github.com/facebook/create-react-app).
 

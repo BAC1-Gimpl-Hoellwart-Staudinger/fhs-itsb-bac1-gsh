@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { CalendarContext } from '../../contexts/CalendarContext';
 import Appointment from './Appointment';
 import dayjs from 'dayjs';
@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 function CalendarDay(props) {
     const {
         appointments,
+        holidaysAT,
         setSelectedDate,
         setShowCreateDialog,
         closeDialogs,
@@ -13,12 +14,18 @@ function CalendarDay(props) {
     } = useContext(CalendarContext);
     const { day } = props;
 
+    const [allAppointments, setAllAppointments] = useState([]);
+
     function handleDayClick(event, date) {
         closeDialogs();
         setSelectedDate(date);
         setDialogPosition(event);
         setShowCreateDialog(true);
     }
+
+    useEffect(() => {
+        setAllAppointments([...appointments, ...holidaysAT]);
+    }, [appointments, holidaysAT]);
 
     return (
         <div
@@ -31,7 +38,7 @@ function CalendarDay(props) {
                 </div>
             </header>
             <div className='pt-1'>
-                {appointments.map((appointment, appointmentIndex) => (
+                {allAppointments.map((appointment, appointmentIndex) => (
                     dayjs(day.date).isBetween(appointment.dateFrom, appointment.dateTo, 'day', '[]') && (
                         <Appointment
                             key={appointmentIndex}

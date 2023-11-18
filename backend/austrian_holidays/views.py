@@ -31,13 +31,16 @@ def austrian_holidays(request):
 
     austrian_holidays_dates = get_austrian_holidays(start_date, end_date)
 
-    json_response = {}
+    holidays_array = []
 
     for date, name in austrian_holidays_dates.items():
-        json_response[date_to_formatted_string(date)] = name
+        holidays_array.append({
+            'date': date_to_formatted_string(date),
+            'name': name
+        })
 
-    json_response = dict(sorted(json_response.items()))
+    holidays_array.sort(key=lambda x: x['date'])
 
     return JsonResponse({
-        'austrianHolidays': json_response
+        'austrianHolidays': holidays_array
     }, status=200)

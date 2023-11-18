@@ -1,4 +1,9 @@
 import { createContext, useState, useEffect, useCallback } from 'react';
+import { useAsyncFn } from '../hooks/useAsync';
+import { getAustrianHolidays } from '../utils/ApiRequest';
+import Date from '../utils/Date';
+import AppointmentUtil from '../utils/Appointment';
+import toast from 'react-hot-toast';
 import dayjs from 'dayjs';
 
 const CalendarContext = createContext();
@@ -20,6 +25,7 @@ function CalendarProvider({ children }) {
     const [date, setDate] = useState(dayjs());
     const [viewScale, setViewScale] = useState(VIEW_SCALES.month);
     const [appointments, setAppointments] = useState(initialAppointments);
+    const [holidaysAT, setHolidaysAT] = useState([]);
     const [dialogPosition, setInternalDialogPosition] = useState(null);
     const [selectedDate, setSelectedDate] = useState(null);
     const [showViewDialog, setShowViewDialog] = useState(false);
@@ -30,6 +36,8 @@ function CalendarProvider({ children }) {
     const [internalEventClick, setInternalEventClick] = useState(undefined);
     const [dialogHeight, setDialogHeight] = useState(undefined);
     const DIALOG_WIDTH = 380;
+
+    const { execute: getAustrianHolidaysExecute } = useAsyncFn(getAustrianHolidays);
 
     const setDialogPosition = useCallback((event) => {
         // dialogHeight will be undefined in first run, if dialog will exceed the window height
@@ -97,6 +105,29 @@ function CalendarProvider({ children }) {
         });
     }, [appointments]);*/
 
+    useEffect(() => {
+        if(!appointments || appointments.length === 0) return;
+
+        const startDateFmt = Date.formatAPIDate(appointments[0].dateFrom);
+        const endDateFmt = Date.formatAPIDate(appointments[appointments.length - 1].dateTo);
+
+        toast.promise(
+            getAustrianHolidaysExecute(startDateFmt, endDateFmt),
+            {
+                loading: 'Fetching austrian holidays...',
+                success: (data) => {
+                    const austrianHolidaysAppointmentsArr = data.austrianHolidays.map((holiday) => {
+                        const date = dayjs(holiday.date).startOf('day');
+                        return AppointmentUtil.createAppointment(holiday.name, date, date, AppointmentUtil.austrianHolidayColor);
+                    });
+                    setHolidaysAT(austrianHolidaysAppointmentsArr);
+                    return 'Successfully fetched austrian holidays';
+                },
+                error: (err) => err,
+            },
+        );
+    }, [appointments, getAustrianHolidaysExecute]);
+
     return (
         <CalendarContext.Provider value={{
             date,
@@ -123,6 +154,7 @@ function CalendarProvider({ children }) {
             DIALOG_WIDTH,
             dialogHeight,
             setDialogHeight,
+            holidaysAT,
             VIEW_SCALES,
         }}>
             {children}

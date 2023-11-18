@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
 
 class Appointment {
+    static austrianHolidayColor = 'bg-gray-600';
     static colors = ['bg-blue-600', 'bg-green-600', 'bg-yellow-600', 'bg-red-600', 'bg-indigo-600', 'bg-purple-600', 'bg-pink-600'];
     static borderColors = ['border-blue-600', 'border-green-600', 'border-yellow-600', 'border-red-600', 'border-indigo-600', 'border-purple-600', 'border-pink-600'];
 
