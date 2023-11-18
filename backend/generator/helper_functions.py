@@ -30,6 +30,10 @@ def generate_random_names(num_employees):
     return random_names
 
 
+def get_austrian_holidays(start_date, end_date):
+    return holidays.AT(years=[start_date.year, end_date.year])
+
+
 def get_austrian_holidays_dates(start_date, end_date):
     austrian_holidays = []
     holidays_at = holidays.AT(years=[start_date.year, end_date.year])
