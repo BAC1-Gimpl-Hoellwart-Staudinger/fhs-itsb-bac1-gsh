@@ -4,7 +4,6 @@ version = "0.1.0"
 description = ""
 authors = ["Clemens Gimpl <cgimpl.its-b2021@fh-salzburg.ac.at>"]
 readme = "README.md"
-packages = [{include = "django_api"}]
 
 [tool.poetry.dependencies]
 python = ">=3.10.4,<3.13"
