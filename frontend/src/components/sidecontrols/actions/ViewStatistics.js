@@ -270,15 +270,17 @@ function ViewStatistics() {
       >
         {displayStats()}
         {drawACFs()}
-        <div className="flex justify-center mb-10">
-          <NumberPickerMUI
-            label="Displayed lag"
-            value={acf_x_range}
-            setValue={set_acf_x_range}
-            minValue={min_acf_x_val}
-            maxValue={max_acf_x_val}
-          />
-        </div>
+        {stats && (
+          <div className="flex justify-center mb-10">
+            <NumberPickerMUI
+              label="Displayed lag"
+              value={acf_x_range}
+              setValue={set_acf_x_range}
+              minValue={min_acf_x_val}
+              maxValue={max_acf_x_val}
+            />
+          </div>
+        )}
         {drawWeekdayStats()}
       </Modal>
 
