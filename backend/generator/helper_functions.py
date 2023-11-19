@@ -31,17 +31,31 @@ def generate_random_names(num_employees):
 
 
 def get_austrian_holidays(start_date, end_date):
-    return holidays.AT(years=[start_date.year, end_date.year])
+    holidays_at = holidays.AT(years=[start_date.year, end_date.year])
+    if type(start_date) == datetime:
+        start_date = start_date.date()
+    if type(end_date) == datetime:
+        end_date = end_date.date()
+    holidays_at = {date: name for date, name in holidays_at.items() if start_date <= date <= end_date}
+    return holidays_at
 
 
 def get_austrian_holidays_dates(start_date, end_date):
-    austrian_holidays = []
+    austrian_holidays_dates = []
     holidays_at = holidays.AT(years=[start_date.year, end_date.year])
 
-    for date_hat in holidays_at:
-        austrian_holidays.append(date_hat)
+    if type(start_date) == datetime:
+        start_date = start_date.date()
 
-    return austrian_holidays
+    if type(end_date) == datetime:
+        end_date = end_date.date()
+
+    holidays_at = {date: name for date, name in holidays_at.items() if start_date <= date <= end_date}
+
+    for date_hat in holidays_at:
+        austrian_holidays_dates.append(date_hat)
+
+    return austrian_holidays_dates
 
 
 def check_holiday(start_date, vacation_schedule):

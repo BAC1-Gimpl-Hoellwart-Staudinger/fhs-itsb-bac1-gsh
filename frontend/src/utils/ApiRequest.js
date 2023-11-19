@@ -44,4 +44,14 @@ function getStats(dataset) {
     });
 }
 
-export { getDataset, getSchedule, getStats };
+function getAustrianHolidays(startDate, endDate) {
+    return sendApiRequest('/austrianHolidays', {
+        method: 'GET',
+        params: {
+            startDate,
+            endDate,
+        },
+    });
+}
+
+export { getDataset, getSchedule, getStats, getAustrianHolidays };
