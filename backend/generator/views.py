@@ -129,15 +129,17 @@ def generate(request):
                 }, status=400)
 
         if algorithm_version == 1:
-            schedule, execution_time_ms = GeneticAlgorithm.genetic_algorithm(start_date, end_date, metadata_body)
+            schedule, execution_time_ms, last_fitness = GeneticAlgorithm.genetic_algorithm(start_date, end_date, metadata_body)
         elif algorithm_version == 2:
-            schedule, execution_time_ms = GeneticAlgorithm2.genetic_algorithm(start_date, end_date, metadata_body)
+            schedule, execution_time_ms, last_fitness = GeneticAlgorithm2.genetic_algorithm(start_date, end_date, metadata_body)
         else:
             return JsonResponse({
                     'error': 'algo_version must be 1 or 2'
                 }, status=400)
 
         metadata['algorithm_execution_time_ms'] = execution_time_ms
+        metadata['fitness_of_schedule'] = last_fitness
+
         dataset = {
             "metadata": metadata,
             "schedule": schedule

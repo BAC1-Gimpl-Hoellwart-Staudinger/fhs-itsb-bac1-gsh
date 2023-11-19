@@ -38,7 +38,7 @@ class GeneticAlgorithm:
                 execution_time_end = timer()
                 execution_time_ms = round((execution_time_end - execution_time_start) * 1000, 2)
                 print(f'Population Size: {len(rankedschedules)} Best Solution Gen ({gen}): {rankedschedules[0][0]}')
-                return rankedschedules[0][1], execution_time_ms
+                return rankedschedules[0][1], execution_time_ms, rankedschedules[0][0]
 
             for s in rankedschedules:
                 newschedule.append(s[1])
@@ -56,7 +56,7 @@ class GeneticAlgorithm:
 
         execution_time_end = timer()
         execution_time_ms = round((execution_time_end - execution_time_start) * 1000, 2)
-        return rankedschedules[0][1], execution_time_ms
+        return rankedschedules[0][1], execution_time_ms, rankedschedules[0][0]
 
     @staticmethod
     def generate_population(start_date, end_date, metadata_body, size):

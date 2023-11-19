@@ -65,6 +65,7 @@ function ViewStatistics() {
       const execTime = convertExecTimeToSeconds(
         stats.metadata.algorithm_execution_time_ms
       );
+      const fitnessSchedule = stats.metadata.fitness_of_schedule;
 
       return (
         <div className="flex flex-col gap-4">
@@ -81,6 +82,10 @@ function ViewStatistics() {
               <span className="font-semibold">{scheduleLength}</span> days and
               was generated with algorithm version{" "}
               <span className="font-semibold">{algorithmVersion}</span>
+            </p>
+            <p className="text-lg">
+              The fitness of the schedule is{" "}
+              <span className="font-semibold">{fitnessSchedule}</span>.
             </p>
             <p className="text-lg">
               Additionally,{" "}

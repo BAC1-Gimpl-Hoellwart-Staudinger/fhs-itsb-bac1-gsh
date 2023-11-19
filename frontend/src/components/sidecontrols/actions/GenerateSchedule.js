@@ -72,7 +72,9 @@ function GenerateSchedule() {
                     const statsRequestBody = {
                         ...dataset,
                     };
+                                        
                     statsRequestBody.metadata.algorithm_execution_time_ms = schedule.metadata.algorithm_execution_time_ms;
+                    statsRequestBody.metadata.fitness_of_schedule = schedule.metadata.fitness_of_schedule;
                     statsRequestBody.schedule = schedule.schedule;
     
                     toast.promise(

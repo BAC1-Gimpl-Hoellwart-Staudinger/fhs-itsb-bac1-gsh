@@ -42,7 +42,7 @@ class GeneticAlgorithm2:
 
         execution_time_end = timer()
         execution_time_ms = round((execution_time_end - execution_time_start) * 1000, 2)
-        return population[0].schedule, execution_time_ms
+        return population[0].schedule, execution_time_ms, population[0].fitness
 
     @staticmethod
     def generate_population(start_date, end_date, metadata_body, size):
