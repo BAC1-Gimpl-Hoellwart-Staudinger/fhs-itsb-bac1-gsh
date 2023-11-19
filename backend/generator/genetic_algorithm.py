@@ -13,8 +13,11 @@ class GeneticAlgorithm:
 
         execution_time_start = timer()
         rankedschedules = []
+
         populationSize = 50
         bestsolution = [1000000, 0]
+        stopping_condition = 500
+
         random.seed(time.time())
         population = GeneticAlgorithm.generate_population(start_date, end_date, metadata_body, populationSize * 2)
         num_employees = len(metadata_body['employees'])
@@ -31,15 +34,14 @@ class GeneticAlgorithm:
                 bestsolution[0] = rankedschedules[0][0]
                 bestsolution[1] = gen
 
-            if rankedschedules[0][0] <= num_employees * 55 or gen - bestsolution[1] > 800:
+            if gen - bestsolution[1] > stopping_condition:
                 execution_time_end = timer()
                 execution_time_ms = round((execution_time_end - execution_time_start) * 1000, 2)
                 print(f'Population Size: {len(rankedschedules)} Best Solution Gen ({gen}): {rankedschedules[0][0]}')
                 return rankedschedules[0][1], execution_time_ms
 
             for s in rankedschedules:
-                if s[0] < 1000000:
-                    newschedule.append(s[1])
+                newschedule.append(s[1])
 
             while len(newschedule) < populationSize:
                 newschedule.append(
