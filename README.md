@@ -38,7 +38,7 @@ To start the back- and frontend servers run
 ## Authors
 
 - [Clemens Gimpl](https://www.github.com/cgimpl)
-- [Jakob Staudinger](https://www.github.com/concitusyt) ??
+- [Jakob Staudinger](https://www.github.com/concitusyt) 
 - [Stefan Höllwart](https://www.github.com/shoellwart)
 
 ## 🔗 Links
