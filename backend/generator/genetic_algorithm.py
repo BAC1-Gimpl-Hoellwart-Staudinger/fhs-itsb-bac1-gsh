@@ -116,7 +116,9 @@ class GeneticAlgorithm:
             weekends.append(0)
             holidays.append(0)
         counter = 0
-
+        num_employees = len(employees)
+        delta_employees = timedelta(days=num_employees)
+        frequency = 0
         while start__date < end__date:
             day = start__date.weekday()
 
@@ -128,6 +130,9 @@ class GeneticAlgorithm:
                 weekdays[schedule[counter] - 1] += 1
             if start__date in holiday_list:
                 holidays[schedule[counter] - 1] += 1
+            if start__date + delta_employees < end__date:
+                if schedule[counter] != schedule[counter + num_employees]:
+                    frequency += 1
             counter += 1
             start__date += delta
             if counter < len(schedule) - 1:
@@ -145,4 +150,8 @@ class GeneticAlgorithm:
             deviation_weekends += abs(mean_weekends - s[1])
             deviation_holidays += abs(mean_holidays - s[2])
         return round(
-            (deviation_weekdays * 10) + (deviation_weekends * 50) + (deviation_holidays * 100) + successive * 30, 2)
+            (deviation_weekdays * 10) +
+            (deviation_weekends * 50) +
+            (deviation_holidays * 100) +
+            (successive * 30) +
+            (frequency * 40), 2)
