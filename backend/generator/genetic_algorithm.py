@@ -104,13 +104,13 @@ class GeneticAlgorithm:
         for s in vac_schedule:
             for i in range(len(s)):
                 s[i] = s[i].date()
-        start__date = start_date.date()
-        end__date = end_date.date()
+        start_date = start_date.date()
+        end_date = end_date.date()
         weekdays = []
         weekends = []
         holidays = []
         successive = 0
-        holiday_list = get_austrian_holidays_dates(start__date, end__date)
+        holiday_list = get_austrian_holidays_dates(start_date, end_date)
         for _ in range(len(employees)):
             weekdays.append(0)
             weekends.append(0)
@@ -119,22 +119,22 @@ class GeneticAlgorithm:
         num_employees = len(employees)
         delta_employees = timedelta(days=num_employees)
         frequency = 0
-        while start__date < end__date:
-            day = start__date.weekday()
+        while start_date < end_date:
+            day = start_date.weekday()
 
-            if start__date in vac_schedule[schedule[counter] - 1]:
+            if start_date in vac_schedule[schedule[counter] - 1]:
                 return 1000000
             if day == 5 or day == 6:
                 weekends[schedule[counter] - 1] += 1
             else:
                 weekdays[schedule[counter] - 1] += 1
-            if start__date in holiday_list:
+            if start_date in holiday_list:
                 holidays[schedule[counter] - 1] += 1
-            if start__date + delta_employees < end__date:
+            if start_date + delta_employees < end_date:
                 if schedule[counter] != schedule[counter + num_employees]:
                     frequency += 1
             counter += 1
-            start__date += delta
+            start_date += delta
             if counter < len(schedule) - 1:
                 if schedule[counter] == schedule[counter + 1]:
                     successive += 1

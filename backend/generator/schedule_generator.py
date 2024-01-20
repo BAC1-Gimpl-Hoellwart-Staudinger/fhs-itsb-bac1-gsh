@@ -9,8 +9,8 @@ class ScheduleGenerator:
     @staticmethod
     def generate_sample_schedule(start_date, end_date, employees):
         delta = timedelta(days=1)
-        start__date = start_date.date()
-        end__date = end_date.date()
+        start_date = start_date.date()
+        end_date = end_date.date()
         execution_time_start = timer()
 
         schedule = []
@@ -22,14 +22,14 @@ class ScheduleGenerator:
         for s in vac_schedule:
             for i in range(len(s)):
                 s[i] = s[i].date()
-        while start__date < end__date:
+        while start_date < end_date:
             employee = random.choice(employees)
             vac_schedule_tmp = vac_schedule[employee['id']-1]
-            while check_holiday(start__date, vac_schedule_tmp) is not True:
+            while check_holiday(start_date, vac_schedule_tmp) is not True:
                 employee = random.choice(employees)
                 vac_schedule_tmp = vac_schedule[employee['id']-1]
             schedule.append(employee['id'])
-            start__date += delta
+            start_date += delta
 
         execution_time_end = timer()
         execution_time_ms = round((execution_time_end - execution_time_start) * 1000, 2)
