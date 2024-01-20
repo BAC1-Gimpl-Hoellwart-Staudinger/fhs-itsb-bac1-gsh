@@ -1,0 +1,30 @@
+--- TESTLAUF 1 ---
+Time elapsed: 126318ms
+Schedules generated: 1000000000
+--- TESTLAUF 2 ---
+Time elapsed: 127035ms
+Schedules generated: 1000000000
+--- TESTLAUF 3 ---
+Time elapsed: 127123ms
+Schedules generated: 1000000000
+--- TESTLAUF 4 ---
+Time elapsed: 125261ms
+Schedules generated: 1000000000
+--- TESTLAUF 5 ---
+Time elapsed: 128052ms
+Schedules generated: 1000000000
+--- TESTLAUF 6 ---
+Time elapsed: 125273ms
+Schedules generated: 1000000000
+--- TESTLAUF 7 ---
+Time elapsed: 125713ms
+Schedules generated: 1000000000
+--- TESTLAUF 8 ---
+Time elapsed: 127278ms
+Schedules generated: 1000000000
+--- TESTLAUF 9 ---
+Time elapsed: 124592ms
+Schedules generated: 1000000000
+--- TESTLAUF 10 ---
+Time elapsed: 127527ms
+Schedules generated: 1000000000
