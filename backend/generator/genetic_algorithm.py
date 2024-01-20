@@ -48,7 +48,7 @@ class GeneticAlgorithm:
                     (ScheduleGenerator.generate_sample_schedule(start_date, end_date, metadata_body['employees'])[0]))
 
             for _ in range(int(populationSize * 0.5)):
-                tmp_listelem = GeneticAlgorithm.crossover(newschedule, 4)
+                tmp_listelem = GeneticAlgorithm.crossover(newschedule, num_parents=4)
                 if random.random() <= 0.1:
                     tmp_listelem[random.randint(0, len(tmp_listelem)) - 1] = random.randint(1, num_employees)
                 newschedule.append(tmp_listelem)
