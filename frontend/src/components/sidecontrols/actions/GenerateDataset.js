@@ -50,7 +50,7 @@ function GenerateDataset() {
                 success: (dataset) => {
                     const existingDatasets = JSON.parse(window.localStorage.getItem(LOCAL_STORAGE_DATASETS_KEY)) || [];
     
-                    if(existingDatasets.length > 5) {
+                    if(existingDatasets.length >= 5) {
                         existingDatasets.splice(0, existingDatasets.length);
                         setDatasetSize(0);
                         toast.error('Clearing datasets due to limit of 5', { duration: 3000, icon: '🗑️' });
