@@ -17,12 +17,13 @@ class GeneticAlgorithm:
         populationSize = 50
         bestsolution = [1000000, 0]
         stopping_condition = 500
+        max_iterations = 15000
 
         random.seed(time.time())
         population = GeneticAlgorithm.generate_population(start_date, end_date, metadata_body, populationSize * 2)
         num_employees = len(metadata_body['employees'])
 
-        for gen in range(5000):
+        for gen in range(max_iterations):
             rankedschedules = GeneticAlgorithm.eval_fitness(population, start_date, end_date, metadata_body)
             rankedschedules = rankedschedules[:populationSize]
             newschedule = []
