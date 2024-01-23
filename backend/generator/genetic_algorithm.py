@@ -28,7 +28,7 @@ class GeneticAlgorithm:
             rankedschedules = rankedschedules[:populationSize]
             newschedule = []
 
-            if gen % 500 == 0:
+            if gen % 100 == 0:
                 print(f'Population Size: {len(rankedschedules)} Best Solution Gen ({gen}): {rankedschedules[0][0]}')
 
             if rankedschedules[0][0] < bestsolution[0]:
