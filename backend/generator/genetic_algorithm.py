@@ -97,47 +97,50 @@ class GeneticAlgorithm:
 
     @staticmethod
     def fitness(schedule, start_date, end_date, data):
-        delta = timedelta(days=1)
+        datetime_day = timedelta(days=1)
         employees = data['employees']
-        vac_schedule = []
-        for employee in employees:
-            vac_schedule.append([string_to_date(date_) for date_ in employee['vacation_schedule']])
-        for s in vac_schedule:
-            for i in range(len(s)):
-                s[i] = s[i].date()
         start_date = start_date.date()
         end_date = end_date.date()
+        holiday_list = get_austrian_holidays_dates(start_date, end_date)
+
+        vacation_schedule = []
+        for employee in employees:
+            vacation_schedule.append([string_to_date(date_).date() for date_ in employee['vacation_schedule']])
+
         weekdays = []
         weekends = []
         holidays = []
         successive = 0
-        holiday_list = get_austrian_holidays_dates(start_date, end_date)
         for _ in range(len(employees)):
             weekdays.append(0)
             weekends.append(0)
             holidays.append(0)
-        counter = 0
-        num_employees = len(employees)
-        delta_employees = timedelta(days=num_employees)
-        frequency = 0
-        while start_date < end_date:
-            day = start_date.weekday()
 
-            if start_date in vac_schedule[schedule[counter] - 1]:
+        num_employees = len(employees)
+        i_day = 0
+        suboptimal_interval = 0
+        current_date = start_date
+        while current_date < end_date:
+            day = current_date.weekday()
+            employee_index = schedule[i_day] - 1
+
+            if current_date in vacation_schedule[employee_index]:
                 return 1000000
             if day == 5 or day == 6:
-                weekends[schedule[counter] - 1] += 1
+                weekends[employee_index] += 1
             else:
-                weekdays[schedule[counter] - 1] += 1
-            if start_date in holiday_list:
-                holidays[schedule[counter] - 1] += 1
-            if start_date + delta_employees < end_date:
-                if schedule[counter] != schedule[counter + num_employees]:
-                    frequency += 1
-            counter += 1
-            start_date += delta
-            if counter < len(schedule) - 1:
-                if schedule[counter] == schedule[counter + 1]:
+                weekdays[employee_index] += 1
+            if current_date in holiday_list:
+                holidays[employee_index] += 1
+                
+            if current_date + timedelta(days=num_employees) < end_date:
+                if schedule[i_day] != schedule[i_day + num_employees]:
+                    suboptimal_interval += 1
+
+            i_day += 1
+            current_date += datetime_day
+            if i_day < len(schedule) - 1:
+                if schedule[i_day] == schedule[i_day + 1]:
                     successive += 1
 
         mean_weekdays = np.mean(weekdays)
@@ -150,9 +153,10 @@ class GeneticAlgorithm:
             deviation_weekdays += abs(mean_weekdays - s[0])
             deviation_weekends += abs(mean_weekends - s[1])
             deviation_holidays += abs(mean_holidays - s[2])
-        return round(
-            (deviation_weekdays * 10) +
-            (deviation_weekends * 50) +
-            (deviation_holidays * 100) +
-            (successive * 30) +
-            (frequency * 40), 2)
+            
+        cost = ((deviation_weekdays * 10) +
+                (deviation_weekends * 50) +
+                (deviation_holidays * 100) +
+                (successive * 30) +
+                (suboptimal_interval * 40))
+        return round(cost, 2)
