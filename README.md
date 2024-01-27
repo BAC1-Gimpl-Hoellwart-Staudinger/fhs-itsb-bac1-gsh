@@ -46,4 +46,4 @@ To start the back- and frontend servers run
 
 ## 🔗 Links
 
-- [GitHub](https://github.com/BAC1-Gimpl-Hoellwart-Staudinger/fhs-itsb-bac1-gsh>)
+- [GitHub](https://github.com/BAC1-Gimpl-Hoellwart-Staudinger/fhs-itsb-bac1-gsh)
