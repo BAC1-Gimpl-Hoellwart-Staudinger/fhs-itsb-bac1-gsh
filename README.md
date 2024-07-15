@@ -5,9 +5,11 @@
 
 Conditional staff scheduling is an omnipresent and intricate topic in industry, since the multitude of possible permutations when arranging a shift plan for several employees rapidly surpasses the number of atoms in the universe. Accordingly, the purpose of this work is to implement a genetic algorithm, specifically designed for scheduling a flexible number of employees over a customizable time frame with the constraint that they can take days off (vacation). Moreover, it is obligatory that the algorithm yields a schedule distributed in a fair manner. To accomplish this, an open-source software has been developed that generates, manipulates, and evaluates suitable schedules. Furthermore, the result is visually presented in form of a web-based calendar. Additionally, the software provides detailed statistics about the most appropriate schedule. This work shows that a genetic algorithm can be applied to this optimization problem and is able to find a near optimal solution in finite time.
 
-## Screenshot
+## Illustrations
 
-![frontend](miscellaneous/screenshots/frontend.png)
+![images/frontend](miscellaneous/images/frontend.png)
+
+![images/requests](miscellaneous/images/requests.svg)
 
 ## Features
 
